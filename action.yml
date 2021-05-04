@@ -1,0 +1,4 @@
+name: "Install Hashlink"
+runs:
+  using: 'node12':
+  main: 'main.js': 
