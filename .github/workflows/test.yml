@@ -1,0 +1,18 @@
+name: CI
+
+on: [push,pull_request]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+      fail-fast: true
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+      - name: build test
+        run: haxe -main Test -hl test.hl
+      - name: run test
+        run: hl test.hl
