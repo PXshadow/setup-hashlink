@@ -36,7 +36,7 @@ function Main_setupWindows() {
 		js_node_ChildProcess.spawnSync("powershell.exe -Command Expand-Archive -LiteralPath hl.zip -DestinationPath .",args,{ stdio : "inherit"});
 	}
 	process.chdir(folderName);
-	var cmd = "setx /M path \"%PATH%;" + process.cwd() + "\"";
+	var cmd = "echo \"" + process.cwd() + "\"" + " >> $GITHUB_PATH";
 	var args = null;
 	if(args == null) {
 		js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"});
