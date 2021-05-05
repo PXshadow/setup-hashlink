@@ -22,14 +22,22 @@ function Main_main() {
 }
 function Main_setupWindows() {
 	var folderName = "hl-1.11.0-win";
-	var path = process.cwd() + "/" + folderName;
-	var cmd = "setx path \"%PATH%;" + path + "\"";
+	var cmd = "powershell.exe -Command wget -O hl.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.11/" + folderName + ".zip";
 	var args = null;
 	if(args == null) {
 		js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"});
 	} else {
 		js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"});
 	}
+	var args = null;
+	if(args == null) {
+		js_node_ChildProcess.spawnSync("powershell.exe -Command Expand-Archive -LiteralPath hl.zip -DestinationPath .",{ shell : true, stdio : "inherit"});
+	} else {
+		js_node_ChildProcess.spawnSync("powershell.exe -Command Expand-Archive -LiteralPath hl.zip -DestinationPath .",args,{ stdio : "inherit"});
+	}
+	var path = process.cwd() + "/" + folderName;
+	var v = process.env["PATH"] + ";" + path;
+	process.env["PATH"] = v;
 }
 function Main_setupLinux() {
 	var args = null;
@@ -57,13 +65,8 @@ function Main_setupLinux() {
 	} else {
 		js_node_ChildProcess.spawnSync("sudo make install",args,{ stdio : "inherit"});
 	}
-	process.chdir("..");
-	var args = null;
-	if(args == null) {
-		js_node_ChildProcess.spawnSync("cp -r hashlink/* .",{ shell : true, stdio : "inherit"});
-	} else {
-		js_node_ChildProcess.spawnSync("cp -r hashlink/* .",args,{ stdio : "inherit"});
-	}
+	var v = process.env["PATH"] + ";" + process.cwd();
+	process.env["PATH"] = v;
 }
 function Main_setupMac() {
 	var args = null;
