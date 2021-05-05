@@ -19,7 +19,11 @@ private function setupLinux() {
     Sys.setCwd("hashlink"); //change dir to hashlink
     Sys.command("sudo make all");
     Sys.command("sudo make install");
+    Sys.setCwd("..");
+    Sys.command("cp -r hashlink/* .");
     Sys.putEnv("PATH",Sys.getEnv("PATH") + ":" + Sys.getCwd());
+    Sys.command("export PATH");
+    Sys.command("echo $PATH");
 }
 private function setupMac() {
     Sys.command('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'); //setup homebrew
