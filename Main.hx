@@ -12,7 +12,7 @@ private function setupWindows() {
     Sys.command("powershell.exe -Command Expand-Archive -LiteralPath hl.zip -DestinationPath .");
     var path = Sys.getCwd() + "\\" + folderName;
     trace("path: " + path);
-    Sys.putEnv("PATH",Sys.getEnv("PATH") + path + ";");
+    Sys.putEnv("PATH",Sys.getEnv("PATH") + ";" + path + ";");
     Sys.println(Sys.getEnv("PATH"));
 }
 private function setupLinux() {

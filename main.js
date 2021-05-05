@@ -37,7 +37,7 @@ function Main_setupWindows() {
 	}
 	var path = process.cwd() + "\\" + folderName;
 	console.log("Main.hx:14:","path: " + path);
-	var v = process.env["PATH"] + path + ";";
+	var v = process.env["PATH"] + ";" + path + ";";
 	process.env["PATH"] = v;
 	var v = process.env["PATH"];
 	process.stdout.write(Std.string(v));
