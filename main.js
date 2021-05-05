@@ -35,9 +35,13 @@ function Main_setupWindows() {
 	} else {
 		js_node_ChildProcess.spawnSync("powershell.exe -Command Expand-Archive -LiteralPath hl.zip -DestinationPath .",args,{ stdio : "inherit"});
 	}
-	var path = process.cwd() + "/" + folderName;
-	var v = process.env["PATH"] + ";" + path;
+	var path = process.cwd() + "\\" + folderName;
+	console.log("Main.hx:14:","path: " + path);
+	var v = process.env["PATH"] + path + ";";
 	process.env["PATH"] = v;
+	var v = process.env["PATH"];
+	process.stdout.write(Std.string(v));
+	process.stdout.write("\n");
 }
 function Main_setupLinux() {
 	var args = null;
@@ -80,12 +84,6 @@ function Main_setupLinux() {
 	} else {
 		js_node_ChildProcess.spawnSync("export PATH",args,{ stdio : "inherit"});
 	}
-	var args = null;
-	if(args == null) {
-		js_node_ChildProcess.spawnSync("echo $PATH",{ shell : true, stdio : "inherit"});
-	} else {
-		js_node_ChildProcess.spawnSync("echo $PATH",args,{ stdio : "inherit"});
-	}
 }
 function Main_setupMac() {
 	var args = null;
@@ -102,6 +100,11 @@ function Main_setupMac() {
 	}
 }
 Math.__name__ = true;
+var Std = function() { };
+Std.__name__ = true;
+Std.string = function(s) {
+	return js_Boot.__string_rec(s,"");
+};
 var Sys = function() { };
 Sys.__name__ = true;
 Sys.systemName = function() {
