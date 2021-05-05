@@ -12,7 +12,9 @@ private function setupWindows() {
     Sys.command("$env:Path += " + Sys.getCwd() + "/hl-1.11.0-win");
 }
 private function setupLinux() {
+    trace("setup linux");
     Sys.command("sudo apt-get install libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev"); //dependencies
+    trace("before clone");
     Sys.command("git clone https://github.com/HaxeFoundation/hashlink");
     trace("after clone");
     Sys.setCwd("hashlink"); //change dir to hashlink
