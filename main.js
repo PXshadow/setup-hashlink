@@ -22,20 +22,8 @@ function Main_main() {
 }
 function Main_setupWindows() {
 	var folderName = "hl-1.11.0-win";
-	var cmd = "powershell.exe -Command wget -O hl.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.11/" + folderName + ".zip";
-	var args = null;
-	if(args == null) {
-		js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"});
-	} else {
-		js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"});
-	}
-	var args = null;
-	if(args == null) {
-		js_node_ChildProcess.spawnSync("powershell.exe -Command Expand-Archive -LiteralPath hl.zip -DestinationPath .",{ shell : true, stdio : "inherit"});
-	} else {
-		js_node_ChildProcess.spawnSync("powershell.exe -Command Expand-Archive -LiteralPath hl.zip -DestinationPath .",args,{ stdio : "inherit"});
-	}
-	var cmd = "powershell.exe -Command cp -r " + folderName + "/* .";
+	var path = process.cwd() + "/" + folderName;
+	var cmd = "setx path \"%PATH%;" + path + "\"";
 	var args = null;
 	if(args == null) {
 		js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"});

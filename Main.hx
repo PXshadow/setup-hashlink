@@ -10,7 +10,8 @@ private function setupWindows() {
     var folderName = "hl-1.11.0-win";
     Sys.command("powershell.exe -Command wget -O hl.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.11/" + folderName + ".zip");
     Sys.command("powershell.exe -Command Expand-Archive -LiteralPath hl.zip -DestinationPath .");
-    Sys.command("powershell.exe -Command cp -r " + folderName + "/* .");
+    var path = Sys.getCwd() + "/" + folderName;
+    Sys.command('setx path "%PATH%;' + path + '"');
 }
 private function setupLinux() {
     Sys.command("sudo apt-get install libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev"); //dependencies
