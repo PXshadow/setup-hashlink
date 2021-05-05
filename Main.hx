@@ -14,7 +14,9 @@ private function setupWindows() {
 private function setupLinux() {
     Sys.command("sudo apt-get install libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev"); //dependencies
     Sys.command("git clone https://github.com/HaxeFoundation/hashlink");
+    trace("after clone");
     Sys.setCwd("hashlink"); //change dir to hashlink
+    trace("set dir");
     Sys.command("ls");
     Sys.command("sudo make all");
     Sys.command("sudo make install");
