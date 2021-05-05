@@ -36,8 +36,13 @@ function Main_setupWindows() {
 		js_node_ChildProcess.spawnSync("powershell.exe -Command Expand-Archive -LiteralPath hl.zip -DestinationPath .",args,{ stdio : "inherit"});
 	}
 	process.chdir(folderName);
-	var v = process.env["PATH"] + ";" + process.cwd();
-	process.env["PATH"] = v;
+	var cmd = "setx /M path \"%PATH%;" + process.cwd() + "\"";
+	var args = null;
+	if(args == null) {
+		js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"});
+	} else {
+		js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"});
+	}
 }
 function Main_setupLinux() {
 	var args = null;
