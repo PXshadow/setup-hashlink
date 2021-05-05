@@ -15,8 +15,8 @@ private function setupLinux() {
     Sys.command("sudo apt-get update -qqy & sudo apt-get install -qqy cmake make libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev"); //dependencies
     Sys.command("git clone https://github.com/HaxeFoundation/hashlink");
     Sys.setCwd("hashlink"); //change dir to hashlink
-    Sys.command("sudo make");
-    Sys.command("sudo ldconfig");
+    Sys.command("sudo make all");
+    Sys.command("sudo make install");
     Sys.command("ls");
     Sys.putEnv("hl",Sys.getCwd());
     Sys.command("export PATH=$PATH:/" + Sys.getCwd() + "/hashlink");
