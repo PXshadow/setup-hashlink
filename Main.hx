@@ -12,9 +12,10 @@ private function setupWindows() {
     Sys.command("$env:Path += " + Sys.getCwd() + "/hl-1.11.0-win");
 }
 private function setupLinux() {
-    Sys.command("sudo apt-get update -qqy & sudo apt-get install -qqy libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev"); //dependencies
+    Sys.command("sudo apt-get update -qqy & sudo apt-get install -qqy cmake make libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev"); //dependencies
     Sys.command("git clone https://github.com/HaxeFoundation/hashlink");
     Sys.command("cd hashlink");
+    Sys.command("sudo make");
     Sys.command("sudo make install");
     Sys.command("sudo ldconfig");
     Sys.command("export PATH=$PATH:/" + Sys.getCwd() + "/hashlink");
