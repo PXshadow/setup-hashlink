@@ -17,6 +17,8 @@ private function setupLinux() {
     Sys.setCwd("hashlink"); //change dir to hashlink
     Sys.command("sudo make all");
     Sys.command("sudo make install");
+    trace("list directory:");
+    Sys.command("ls");
     Sys.command("export PATH=$PATH:/" + Sys.getCwd() + "/hashlink");
 }
 private function setupMac() {

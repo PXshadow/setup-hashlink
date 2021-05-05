@@ -67,6 +67,13 @@ function Main_setupLinux() {
 	} else {
 		js_node_ChildProcess.spawnSync("sudo make install",args,{ stdio : "inherit"});
 	}
+	console.log("Main.hx:20:","list directory:");
+	var args = null;
+	if(args == null) {
+		js_node_ChildProcess.spawnSync("ls",{ shell : true, stdio : "inherit"});
+	} else {
+		js_node_ChildProcess.spawnSync("ls",args,{ stdio : "inherit"});
+	}
 	var cmd = "export PATH=$PATH:/" + process.cwd() + "/hashlink";
 	var args = null;
 	if(args == null) {
