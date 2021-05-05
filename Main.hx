@@ -17,8 +17,8 @@ private function setupLinux() {
     Sys.setCwd("hashlink"); //change dir to hashlink
     Sys.command("sudo make all");
     Sys.command("sudo make install");
-    Sys.command("cp -f /usr/local/lib64/libhl*  /lib64 "); //copy *.so
-    trace("list directory: " + Sys.getCwd());
+    Sys.setCwd("..");
+    Sys.command("cp -r hashlink/* .");
 }
 private function setupMac() {
     Sys.command('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'); //setup homebrew
