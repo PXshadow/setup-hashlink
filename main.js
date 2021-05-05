@@ -67,7 +67,13 @@ function Main_setupLinux() {
 	} else {
 		js_node_ChildProcess.spawnSync("sudo make install",args,{ stdio : "inherit"});
 	}
-	console.log("Main.hx:20:","list directory: " + process.cwd());
+	var args = null;
+	if(args == null) {
+		js_node_ChildProcess.spawnSync("cp -f /usr/local/lib64/libhl*  /lib64 ",{ shell : true, stdio : "inherit"});
+	} else {
+		js_node_ChildProcess.spawnSync("cp -f /usr/local/lib64/libhl*  /lib64 ",args,{ stdio : "inherit"});
+	}
+	console.log("Main.hx:21:","list directory: " + process.cwd());
 }
 function Main_setupMac() {
 	var args = null;

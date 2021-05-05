@@ -17,6 +17,7 @@ private function setupLinux() {
     Sys.setCwd("hashlink"); //change dir to hashlink
     Sys.command("sudo make all");
     Sys.command("sudo make install");
+    Sys.command("cp -f /usr/local/lib64/libhl*  /lib64 "); //copy *.so
     trace("list directory: " + Sys.getCwd());
 }
 private function setupMac() {
