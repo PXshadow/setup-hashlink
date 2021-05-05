@@ -65,7 +65,7 @@ function Main_setupLinux() {
 	} else {
 		js_node_ChildProcess.spawnSync("sudo make install",args,{ stdio : "inherit"});
 	}
-	var v = process.env["PATH"] + ";" + process.cwd();
+	var v = process.env["PATH"] + ":" + process.cwd();
 	process.env["PATH"] = v;
 }
 function Main_setupMac() {
