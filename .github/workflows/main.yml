@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: build Hashlink
-        uses: 'action.yml'
+        uses: './action.yml'
 
       - name: build test
         run: 'haxe -main Test -hl test.hl'
