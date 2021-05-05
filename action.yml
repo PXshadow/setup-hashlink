@@ -1,5 +1,5 @@
-name: 'Install Hashlink'
-description: 'Install Hashlink'
+name: 'Setup Hashlink'
+description: 'Install and setup Hashlink'
 runs:
   using: 'node12'
   main: 'main.js'
