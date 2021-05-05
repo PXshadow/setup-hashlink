@@ -43,7 +43,6 @@ function Main_setupWindows() {
 	} else {
 		js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"});
 	}
-	console.log("Main.hx:15:","github_path: " + process.env["GITHUB_PATH"]);
 }
 function Main_setupLinux() {
 	var args = null;

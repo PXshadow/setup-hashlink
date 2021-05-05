@@ -12,7 +12,6 @@ private function setupWindows() {
     Sys.command("powershell.exe -Command Expand-Archive -LiteralPath hl.zip -DestinationPath .");
     Sys.setCwd(folderName);
     Sys.command('powershell.exe -Command "echo "' + Sys.getCwd() + '" | Out-File -FilePath "' + Sys.getEnv("GITHUB_PATH") + '" -Encoding utf8 -Append"');
-    trace("github_path: " + Sys.getEnv("GITHUB_PATH"));
 }
 private function setupLinux() {
     Sys.command("sudo apt-get install libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev"); //dependencies

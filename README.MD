@@ -1,6 +1,10 @@
 # setup-hashlink
 
+[![CI](https://img.shields.io/github/workflow/status/pxshadow/setup-hashlink/CI)](https://github.com/pxshadow/setup-hashlink/actions?query=workflow%3ACI)
+
 This action sets up Hashlink for use in your github actions workflow.
+
+*Supports Linux, Windows and Mac.*
 
 ## Usage
 
