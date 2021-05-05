@@ -16,7 +16,6 @@ private function setupLinux() {
     Sys.command("git clone https://github.com/HaxeFoundation/hashlink");
     Sys.setCwd("hashlink"); //change dir to hashlink
     Sys.command("sudo make");
-    Sys.command("sudo make install");
     Sys.command("sudo ldconfig");
     Sys.command("ls");
     Sys.putEnv("hl",Sys.getCwd());
