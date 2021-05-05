@@ -20,4 +20,4 @@ jobs:
       - name: build test
         run: npx haxe -main Test -hl test.hl
       - name: run test
-        run: sudo hl test.hl
+        run: hl test.hl
