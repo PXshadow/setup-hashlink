@@ -42,29 +42,19 @@ function Main_setupWindows() {
 	}
 }
 function Main_setupLinux() {
-	console.log("Main.hx:15:","setup linux");
 	var args = null;
 	if(args == null) {
 		js_node_ChildProcess.spawnSync("sudo apt-get install libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev",{ shell : true, stdio : "inherit"});
 	} else {
 		js_node_ChildProcess.spawnSync("sudo apt-get install libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev",args,{ stdio : "inherit"});
 	}
-	console.log("Main.hx:17:","before clone");
 	var args = null;
 	if(args == null) {
 		js_node_ChildProcess.spawnSync("git clone https://github.com/HaxeFoundation/hashlink",{ shell : true, stdio : "inherit"});
 	} else {
 		js_node_ChildProcess.spawnSync("git clone https://github.com/HaxeFoundation/hashlink",args,{ stdio : "inherit"});
 	}
-	console.log("Main.hx:19:","after clone");
 	process.chdir("hashlink");
-	console.log("Main.hx:21:","set dir");
-	var args = null;
-	if(args == null) {
-		js_node_ChildProcess.spawnSync("ls",{ shell : true, stdio : "inherit"});
-	} else {
-		js_node_ChildProcess.spawnSync("ls",args,{ stdio : "inherit"});
-	}
 	var args = null;
 	if(args == null) {
 		js_node_ChildProcess.spawnSync("sudo make all",{ shell : true, stdio : "inherit"});
@@ -77,14 +67,6 @@ function Main_setupLinux() {
 	} else {
 		js_node_ChildProcess.spawnSync("sudo make install",args,{ stdio : "inherit"});
 	}
-	var args = null;
-	if(args == null) {
-		js_node_ChildProcess.spawnSync("ls",{ shell : true, stdio : "inherit"});
-	} else {
-		js_node_ChildProcess.spawnSync("ls",args,{ stdio : "inherit"});
-	}
-	var v = process.cwd();
-	process.env["hl"] = v;
 	var cmd = "export PATH=$PATH:/" + process.cwd() + "/hashlink";
 	var args = null;
 	if(args == null) {
