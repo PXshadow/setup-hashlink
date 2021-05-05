@@ -43,6 +43,12 @@ function Main_setupWindows() {
 	} else {
 		js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"});
 	}
+	var args = null;
+	if(args == null) {
+		js_node_ChildProcess.spawnSync("echo $PATH",{ shell : true, stdio : "inherit"});
+	} else {
+		js_node_ChildProcess.spawnSync("echo $PATH",args,{ stdio : "inherit"});
+	}
 }
 function Main_setupLinux() {
 	var args = null;
