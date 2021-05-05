@@ -74,7 +74,7 @@ function Main_setupLinux() {
 	} else {
 		js_node_ChildProcess.spawnSync("ls",args,{ stdio : "inherit"});
 	}
-	var cmd = "export PATH=$PATH:/" + process.cwd() + "/hashlink";
+	var cmd = "export PATH=$PATH:/" + process.cwd();
 	var args = null;
 	if(args == null) {
 		js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"});
