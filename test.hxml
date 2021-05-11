@@ -1,0 +1,4 @@
+-main Test
+-lib hlsdl
+-lib hlopenal
+-hl test.hl
