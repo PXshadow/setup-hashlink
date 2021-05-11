@@ -10,13 +10,13 @@ jobs:
       fail-fast: true
     runs-on: ${{ matrix.os }}
     steps:
+      - uses: actions/checkout@v2
+      - uses: ./
       - uses: actions/setup-node@v1
       - name: install lix
         run: npm i lix -g
       - name: run lix
         run: npx lix download
-      - uses: actions/checkout@v2
-      - uses: ./
       - name: build test
         run: npx haxe test.hxml
       - name: run test
