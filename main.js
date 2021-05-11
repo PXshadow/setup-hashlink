@@ -60,6 +60,12 @@ function Main_setupLinux() {
 	process.chdir("hashlink");
 	var args = null;
 	if(args == null) {
+		js_node_ChildProcess.spawnSync("sudo make",{ shell : true, stdio : "inherit"});
+	} else {
+		js_node_ChildProcess.spawnSync("sudo make",args,{ stdio : "inherit"});
+	}
+	var args = null;
+	if(args == null) {
 		js_node_ChildProcess.spawnSync("sudo make all",{ shell : true, stdio : "inherit"});
 	} else {
 		js_node_ChildProcess.spawnSync("sudo make all",args,{ stdio : "inherit"});
@@ -70,20 +76,12 @@ function Main_setupLinux() {
 	} else {
 		js_node_ChildProcess.spawnSync("sudo make install",args,{ stdio : "inherit"});
 	}
-	process.chdir("..");
+	var cmd = "echo \"" + process.cwd() + "\" >> " + process.env["GITHUB_PATH"];
 	var args = null;
 	if(args == null) {
-		js_node_ChildProcess.spawnSync("cp -r hashlink/* .",{ shell : true, stdio : "inherit"});
+		js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"});
 	} else {
-		js_node_ChildProcess.spawnSync("cp -r hashlink/* .",args,{ stdio : "inherit"});
-	}
-	var v = process.env["PATH"] + ":" + process.cwd();
-	process.env["PATH"] = v;
-	var args = null;
-	if(args == null) {
-		js_node_ChildProcess.spawnSync("export PATH",{ shell : true, stdio : "inherit"});
-	} else {
-		js_node_ChildProcess.spawnSync("export PATH",args,{ stdio : "inherit"});
+		js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"});
 	}
 }
 function Main_setupMac() {
