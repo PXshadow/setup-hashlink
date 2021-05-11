@@ -6,6 +6,7 @@ function main() {
         default: setupLinux();
     }
 }
+//https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#add-a-system-path-add-path
 private function setupWindows() {
     var folderName = "hl-1.11.0-win";
     Sys.command("powershell.exe -Command wget -O hl.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.11/" + folderName + ".zip");
@@ -19,10 +20,7 @@ private function setupLinux() {
     Sys.setCwd("hashlink"); //change dir to hashlink
     Sys.command("sudo make all");
     Sys.command("sudo make install");
-    Sys.setCwd("..");
-    Sys.command("cp -r hashlink/* .");
-    Sys.putEnv("PATH",Sys.getEnv("PATH") + ":" + Sys.getCwd());
-    Sys.command("export PATH");
+    Sys.command('echo "' + Sys.getCwd() + '" >> ' + Sys.getEnv("GITHUB_PATH"));
 }
 private function setupMac() {
     Sys.command('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'); //setup homebrew
