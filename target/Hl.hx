@@ -55,8 +55,7 @@ class Hl {
 				Sys.setCwd(hlSrc);
 				Sys.command("sudo make all");
 				Sys.command("sudo make install");
-				Sys.setCwd("..");
-				addToPATH(hlSrc + "/bin");
+				addToPATH(hlSrc);
 		}
 
 		runCommand("hl", ["--version"]);

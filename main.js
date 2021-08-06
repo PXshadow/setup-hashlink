@@ -928,8 +928,7 @@ target_Hl.getHlDependencies = function() {
 		} else {
 			js_node_ChildProcess.spawnSync("sudo make install",args,{ stdio : "inherit"});
 		}
-		process.chdir("..");
-		System.addToPATH(target_Hl.hlSrc + "/bin");
+		System.addToPATH(target_Hl.hlSrc);
 	}
 	System.runCommand("hl",["--version"]);
 };
