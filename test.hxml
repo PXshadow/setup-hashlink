@@ -1,4 +1,4 @@
 -main Test
--lib hlsdl
+#-lib hlsdl
 #-lib hlopenal
 -hl test.hl
