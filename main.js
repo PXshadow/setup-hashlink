@@ -611,121 +611,6 @@ var haxe_io_Error = $hxEnums["haxe.io.Error"] = { __ename__:true,__constructs__:
 	,Custom: ($_=function(e) { return {_hx_index:3,e:e,__enum__:"haxe.io.Error",toString:$estr}; },$_._hx_name="Custom",$_.__params__ = ["e"],$_)
 };
 haxe_io_Error.__constructs__ = [haxe_io_Error.Blocked,haxe_io_Error.Overflow,haxe_io_Error.OutsideBounds,haxe_io_Error.Custom];
-var haxe_io_Path = function() { };
-haxe_io_Path.__name__ = true;
-haxe_io_Path.join = function(paths) {
-	var _g = [];
-	var _g1 = 0;
-	var _g2 = paths;
-	while(_g1 < _g2.length) {
-		var v = _g2[_g1];
-		++_g1;
-		if(v != null && v != "") {
-			_g.push(v);
-		}
-	}
-	var paths = _g;
-	if(paths.length == 0) {
-		return "";
-	}
-	var path = paths[0];
-	var _g = 1;
-	var _g1 = paths.length;
-	while(_g < _g1) {
-		var i = _g++;
-		path = haxe_io_Path.addTrailingSlash(path);
-		path += paths[i];
-	}
-	return haxe_io_Path.normalize(path);
-};
-haxe_io_Path.normalize = function(path) {
-	var slash = "/";
-	path = path.split("\\").join(slash);
-	if(path == slash) {
-		return slash;
-	}
-	var target = [];
-	var _g = 0;
-	var _g1 = path.split(slash);
-	while(_g < _g1.length) {
-		var token = _g1[_g];
-		++_g;
-		if(token == ".." && target.length > 0 && target[target.length - 1] != "..") {
-			target.pop();
-		} else if(token == "") {
-			if(target.length > 0 || HxOverrides.cca(path,0) == 47) {
-				target.push(token);
-			}
-		} else if(token != ".") {
-			target.push(token);
-		}
-	}
-	var tmp = target.join(slash);
-	var acc_b = "";
-	var colon = false;
-	var slashes = false;
-	var _g2_offset = 0;
-	var _g2_s = tmp;
-	while(_g2_offset < _g2_s.length) {
-		var s = _g2_s;
-		var index = _g2_offset++;
-		var c = s.charCodeAt(index);
-		if(c >= 55296 && c <= 56319) {
-			c = c - 55232 << 10 | s.charCodeAt(index + 1) & 1023;
-		}
-		var c1 = c;
-		if(c1 >= 65536) {
-			++_g2_offset;
-		}
-		var c2 = c1;
-		switch(c2) {
-		case 47:
-			if(!colon) {
-				slashes = true;
-			} else {
-				var i = c2;
-				colon = false;
-				if(slashes) {
-					acc_b += "/";
-					slashes = false;
-				}
-				acc_b += String.fromCodePoint(i);
-			}
-			break;
-		case 58:
-			acc_b += ":";
-			colon = true;
-			break;
-		default:
-			var i1 = c2;
-			colon = false;
-			if(slashes) {
-				acc_b += "/";
-				slashes = false;
-			}
-			acc_b += String.fromCodePoint(i1);
-		}
-	}
-	return acc_b;
-};
-haxe_io_Path.addTrailingSlash = function(path) {
-	if(path.length == 0) {
-		return "/";
-	}
-	var c1 = path.lastIndexOf("/");
-	var c2 = path.lastIndexOf("\\");
-	if(c1 < c2) {
-		if(c2 != path.length - 1) {
-			return path + "\\";
-		} else {
-			return path;
-		}
-	} else if(c1 != path.length - 1) {
-		return path + "/";
-	} else {
-		return path;
-	}
-};
 var haxe_iterators_ArrayIterator = function(array) {
 	this.current = 0;
 	this.array = array;
@@ -884,6 +769,12 @@ target_Hl.getHlDependencies = function() {
 		Linux.requireAptPackages(["ninja-build","libpng-dev","libjpeg-turbo8-dev","libturbojpeg","zlib1g-dev","libvorbis-dev","libopenal-dev","libsdl2-dev","libmbedtls-dev","libuv1-dev"]);
 		break;
 	case "Mac":
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync("/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync("/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",args,{ stdio : "inherit"});
+		}
 		break;
 	case "Windows":
 		break;
@@ -990,20 +881,6 @@ Config.colorSupported = (function($this) {
 	return $r;
 }(this));
 System.success = true;
-target_Hl.hlSrc = (function($this) {
-	var $r;
-	var _g = Config.ci;
-	var _g1 = Config.systemName;
-	$r = _g == null ? haxe_io_Path.join([process.env["HOME"],"hashlink"]) : (function($this) {
-		var $r;
-		switch(_g._hx_index) {
-		case 0:
-			$r = _g1 == "Windows" ? "C:\\hashlink" : haxe_io_Path.join([process.env["HOME"],"hashlink"]);
-			break;
-		}
-		return $r;
-	}($this));
-	return $r;
-}(this));
+target_Hl.hlSrc = process.cwd() + "/hashlink";
 Main_main();
 })({});

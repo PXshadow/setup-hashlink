@@ -7,10 +7,7 @@ import sys.FileSystem;
 
 class Hl {
 
-	static var hlSrc = switch [ci, systemName] {
-			case [GithubActions, "Windows"]: "C:\\hashlink";
-			case _: Path.join([Sys.getEnv("HOME"), "hashlink"]);
-		};
+	static var hlSrc = Sys.getCwd() + "/hashlink";
 
 	static public function getHlDependencies() {
 		if (commandSucceed("hl", ["--version"])) {
@@ -33,6 +30,7 @@ class Hl {
 					"libuv1-dev",
 				]);
 			case "Mac":
+				Sys.command('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'); //setup homebrew
 			case "Windows":
 				// pass
 		}
@@ -54,7 +52,7 @@ class Hl {
 				Sys.setCwd(hlSrc);
 				if (systemName == "Mac")
 					Sys.command("brew bundle");
-				
+
 				Sys.command("sudo make all");
 				Sys.command("sudo make install");
 				addToPATH(hlSrc);
