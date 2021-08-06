@@ -40,7 +40,9 @@ class Hl {
 				} else
 					infoMsg("Reusing hashlink binary");
 				Sys.command("dir");
-				Sys.setCwd("./hashlink/hl-1.11.0-win");
+				Sys.setCwd("hashlink");
+				Sys.command("dir");
+				Sys.setCwd("hl-1.11.0-win");
 			default:
 				Sys.putEnv("LD_LIBRARY_PATH","/usr/local/lib");
 				if (!FileSystem.exists("hashlink")) {
