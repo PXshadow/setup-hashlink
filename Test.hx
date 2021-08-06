@@ -1,3 +1,4 @@
+#if hl
 import hl.uv.Tcp;        //uv
 import sys.db.Mysql;     //mysql
 import sys.db.Sqlite;    //sqlite
@@ -9,3 +10,4 @@ import openal.AL;        //al
 function main() {
     trace("Hello world");
 }
+#end
