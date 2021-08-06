@@ -78,12 +78,6 @@ function Main_main() {
 		Main_addPath();
 		break;
 	}
-	var args = null;
-	if(args == null) {
-		js_node_ChildProcess.spawnSync("hl",{ shell : true, stdio : "inherit"});
-	} else {
-		js_node_ChildProcess.spawnSync("hl",args,{ stdio : "inherit"});
-	}
 }
 function Main_deleteDirectoryRecursively(dir) {
 	if(Sys.systemName() == "Windows") {
