@@ -7,34 +7,6 @@ function $extend(from, fields) {
 	if( fields.toString !== Object.prototype.toString ) proto.toString = fields.toString;
 	return proto;
 }
-var Ci = $hxEnums["Ci"] = { __ename__:true,__constructs__:null
-	,GithubActions: {_hx_name:"GithubActions",_hx_index:0,__enum__:"Ci",toString:$estr}
-};
-Ci.__constructs__ = [Ci.GithubActions];
-var Sys = function() { };
-Sys.__name__ = true;
-Sys.systemName = function() {
-	var _g = process.platform;
-	switch(_g) {
-	case "darwin":
-		return "Mac";
-	case "freebsd":
-		return "BSD";
-	case "linux":
-		return "Linux";
-	case "win32":
-		return "Windows";
-	default:
-		var other = _g;
-		return other;
-	}
-};
-var js_node_Fs = require("fs");
-var Config = function() { };
-Config.__name__ = true;
-Config.isCi = function() {
-	return Config.ci != null;
-};
 var HxOverrides = function() { };
 HxOverrides.__name__ = true;
 HxOverrides.cca = function(s,index) {
@@ -107,6 +79,24 @@ StringTools.startsWith = function(s,start) {
 };
 StringTools.replace = function(s,sub,by) {
 	return s.split(sub).join(by);
+};
+var Sys = function() { };
+Sys.__name__ = true;
+Sys.systemName = function() {
+	var _g = process.platform;
+	switch(_g) {
+	case "darwin":
+		return "Mac";
+	case "freebsd":
+		return "BSD";
+	case "linux":
+		return "Linux";
+	case "win32":
+		return "Windows";
+	default:
+		var other = _g;
+		return other;
+	}
 };
 var haxe_io_Output = function() { };
 haxe_io_Output.__name__ = true;
@@ -255,15 +245,15 @@ Failure.__constructs__ = [Failure.Fail];
 var System = function() { };
 System.__name__ = true;
 System.successMsg = function(msg) {
-	process.stdout.write(Std.string(Config.colorSupported ? "\x1B[32m" + msg + "\x1B[0m" : msg));
+	process.stdout.write(Std.string(System.colorSupported ? "\x1B[32m" + msg + "\x1B[0m" : msg));
 	process.stdout.write("\n");
 };
 System.failMsg = function(msg) {
-	process.stdout.write(Std.string(Config.colorSupported ? "\x1B[31m" + msg + "\x1B[0m" : msg));
+	process.stdout.write(Std.string(System.colorSupported ? "\x1B[31m" + msg + "\x1B[0m" : msg));
 	process.stdout.write("\n");
 };
 System.infoMsg = function(msg) {
-	process.stdout.write(Std.string(Config.colorSupported ? "\x1B[36m" + msg + "\x1B[0m" : msg));
+	process.stdout.write(Std.string(System.colorSupported ? "\x1B[36m" + msg + "\x1B[0m" : msg));
 	process.stdout.write("\n");
 };
 System.commandSucceed = function(cmd,args) {
@@ -342,7 +332,7 @@ System.fail = function() {
 };
 System.addToPATH = function(path) {
 	System.infoMsg("Prepending " + path + " to PATH.");
-	switch(Config.systemName) {
+	switch(System.systemName) {
 	case "Linux":case "Mac":
 		var v = path + ":" + process.env["PATH"];
 		process.env["PATH"] = v;
@@ -719,6 +709,7 @@ js_Boot.__string_rec = function(o,s) {
 	}
 };
 var js_node_ChildProcess = require("child_process");
+var js_node_Fs = require("fs");
 var js_node_KeyValue = {};
 js_node_KeyValue.get_key = function(this1) {
 	return this1[0];
@@ -726,6 +717,7 @@ js_node_KeyValue.get_key = function(this1) {
 js_node_KeyValue.get_value = function(this1) {
 	return this1[1];
 };
+var js_node_Path = require("path");
 var js_node_buffer_Buffer = require("buffer").Buffer;
 var js_node_stream_WritableNewOptionsAdapter = {};
 js_node_stream_WritableNewOptionsAdapter.from = function(options) {
@@ -757,6 +749,27 @@ sys_FileSystem.exists = function(path) {
 		return false;
 	}
 };
+sys_FileSystem.createDirectory = function(path) {
+	try {
+		js_node_Fs.mkdirSync(path);
+	} catch( _g ) {
+		var e = haxe_Exception.caught(_g).unwrap();
+		if(e.code == "ENOENT") {
+			sys_FileSystem.createDirectory(js_node_Path.dirname(path));
+			js_node_Fs.mkdirSync(path);
+		} else {
+			var stat;
+			try {
+				stat = js_node_Fs.statSync(path);
+			} catch( _g1 ) {
+				throw e;
+			}
+			if(!stat.isDirectory()) {
+				throw e;
+			}
+		}
+	}
+};
 var target_Hl = function() { };
 target_Hl.__name__ = true;
 target_Hl.getHlDependencies = function() {
@@ -764,7 +777,7 @@ target_Hl.getHlDependencies = function() {
 		System.infoMsg("hl has already been installed.");
 		return;
 	}
-	switch(Config.systemName) {
+	switch(target_Hl.systemName) {
 	case "Linux":
 		Linux.requireAptPackages(["ninja-build","libpng-dev","libjpeg-turbo8-dev","libturbojpeg","zlib1g-dev","libvorbis-dev","libopenal-dev","libsdl2-dev","libmbedtls-dev","libuv1-dev"]);
 		break;
@@ -779,7 +792,11 @@ target_Hl.getHlDependencies = function() {
 	case "Windows":
 		break;
 	}
-	if(Config.systemName == "Windows") {
+	if(target_Hl.systemName == "Windows") {
+		if(!sys_FileSystem.exists("windows")) {
+			sys_FileSystem.createDirectory("windows");
+		}
+		process.chdir("windows");
 		if(!sys_FileSystem.exists("hashlink")) {
 			var args = null;
 			if(args == null) {
@@ -796,20 +813,7 @@ target_Hl.getHlDependencies = function() {
 		} else {
 			System.infoMsg("Reusing hashlink binary");
 		}
-		var args = null;
-		if(args == null) {
-			js_node_ChildProcess.spawnSync("dir",{ shell : true, stdio : "inherit"});
-		} else {
-			js_node_ChildProcess.spawnSync("dir",args,{ stdio : "inherit"});
-		}
-		process.chdir("hashlink");
-		var args = null;
-		if(args == null) {
-			js_node_ChildProcess.spawnSync("dir",{ shell : true, stdio : "inherit"});
-		} else {
-			js_node_ChildProcess.spawnSync("dir",args,{ stdio : "inherit"});
-		}
-		process.chdir("hl-1.11.0-win");
+		process.chdir("hashlink/hl-1.11.0-win");
 	} else {
 		process.env["LD_LIBRARY_PATH"] = "/usr/local/lib";
 		if(!sys_FileSystem.exists("hashlink")) {
@@ -818,7 +822,7 @@ target_Hl.getHlDependencies = function() {
 			System.infoMsg("Reusing hashlink repository");
 		}
 		process.chdir("hashlink");
-		if(Config.systemName == "Mac") {
+		if(target_Hl.systemName == "Mac") {
 			var args = null;
 			if(args == null) {
 				js_node_ChildProcess.spawnSync("brew bundle",{ shell : true, stdio : "inherit"});
@@ -849,49 +853,9 @@ if( String.fromCodePoint == null ) String.fromCodePoint = function(c) { return c
 String.__name__ = true;
 Array.__name__ = true;
 js_Boot.__toStr = ({ }).toString;
-Config.systemName = Sys.systemName();
-Config.cwd = process.cwd();
-Config.repoDir = (function($this) {
-	var $r;
-	var tmp;
-	try {
-		tmp = js_node_Fs.realpathSync("..");
-	} catch( _g ) {
-		tmp = null;
-	}
-	$r = tmp + "/";
-	return $r;
-}(this));
-Config.unitDir = Config.cwd + "unit/";
-Config.ci = process.env["GITHUB_WORKSPACE"] != null ? Ci.GithubActions : null;
-Config.home = process.env["HOME"] == null ? process.cwd() : process.env["HOME"];
-Config.colorSupported = (function($this) {
-	var $r;
-	var _g = Config.ci;
-	$r = _g == null ? (function($this) {
-		var $r;
-		switch(Config.systemName) {
-		case "Linux":case "Mac":
-			$r = true;
-			break;
-		case "Windows":
-			$r = false;
-			break;
-		default:
-			$r = false;
-		}
-		return $r;
-	}($this)) : (function($this) {
-		var $r;
-		switch(_g._hx_index) {
-		case 0:
-			$r = true;
-			break;
-		}
-		return $r;
-	}($this));
-	return $r;
-}(this));
 System.success = true;
+System.colorSupported = true;
+System.systemName = Sys.systemName();
+target_Hl.systemName = System.systemName;
 Main_main();
 })({});

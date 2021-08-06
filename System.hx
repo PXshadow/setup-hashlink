@@ -1,4 +1,3 @@
-import Config.*;
 import haxe.Timer;
 import sys.io.Process;
 
@@ -10,6 +9,9 @@ enum Failure {
 
 class System {
 	static public var success(default, null) = true;
+	static final colorSupported = true;
+
+	public static final systemName = Sys.systemName();
 
 	static public function successMsg(msg:String):Void {
 		Sys.println(colorSupported ? '\x1b[32m' + msg + '\x1b[0m' : msg);

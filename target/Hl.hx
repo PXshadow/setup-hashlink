@@ -1,12 +1,11 @@
 package target;
 
-import Config.*;
 import System.*;
 import haxe.io.Path;
 import sys.FileSystem;
 
 class Hl {
-
+	static final systemName = System.systemName;
 	static public function getHlDependencies() {
 		if (commandSucceed("hl", ["--version"])) {
 			infoMsg('hl has already been installed.');
@@ -34,15 +33,15 @@ class Hl {
 		}
 		switch systemName {
 			case "Windows":
+				if (!FileSystem.exists("windows"))
+					FileSystem.createDirectory("windows");
+				Sys.setCwd("windows");
 				if (!FileSystem.exists("hashlink")) {
 					Sys.command('powershell.exe -Command wget -O hashlink.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.11/hl-1.11.0-win.zip');
 					Sys.command("powershell.exe -Command Expand-Archive hashlink.zip");
 				} else
 					infoMsg("Reusing hashlink binary");
-				Sys.command("dir");
-				Sys.setCwd("hashlink");
-				Sys.command("dir");
-				Sys.setCwd("hl-1.11.0-win");
+				Sys.setCwd("hashlink/hl-1.11.0-win");
 			default:
 				Sys.putEnv("LD_LIBRARY_PATH","/usr/local/lib");
 				if (!FileSystem.exists("hashlink")) {
