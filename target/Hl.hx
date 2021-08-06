@@ -48,6 +48,7 @@ class Hl {
 					infoMsg("Reusing hashlink binary");
 				addToPATH("hashlink/hl-1.11.0-win");
 			default:
+				Sys.putEnv("LD_LIBRARY_PATH","/usr/local/lib");
 				if (!FileSystem.exists(hlSrc)) {
 					runCommand("git", ["clone", "https://github.com/HaxeFoundation/hashlink.git", hlSrc]);
 				} else

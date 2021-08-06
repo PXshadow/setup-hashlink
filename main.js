@@ -909,6 +909,7 @@ target_Hl.getHlDependencies = function() {
 		}
 		System.addToPATH("hashlink/hl-1.11.0-win");
 	} else {
+		process.env["LD_LIBRARY_PATH"] = "/usr/local/lib";
 		if(!sys_FileSystem.exists(target_Hl.hlSrc)) {
 			System.runCommand("git",["clone","https://github.com/HaxeFoundation/hashlink.git",target_Hl.hlSrc]);
 		} else {
