@@ -39,6 +39,12 @@ function Main_main() {
 		} else {
 			js_node_ChildProcess.spawnSync("sudo make install",args,{ stdio : "inherit"});
 		}
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync("sudo ldconfig",{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync("sudo ldconfig",args,{ stdio : "inherit"});
+		}
 		var cmd = "echo \"" + process.cwd() + "\" >> " + process.env["GITHUB_PATH"];
 		var args = null;
 		if(args == null) {

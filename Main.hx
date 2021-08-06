@@ -20,7 +20,7 @@ function main() {
             Sys.setCwd("/usr/hashlink"); //change dir to hashlink
             Sys.command("sudo make all");
             Sys.command("sudo make install");
-            
+            Sys.command("sudo ldconfig");
             Sys.command('echo "' + Sys.getCwd() + '" >> ' + Sys.getEnv("GITHUB_PATH"));
         case "Mac":
             Sys.command('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'); //setup homebrew
