@@ -7,54 +7,77 @@ function $extend(from, fields) {
 	if( fields.toString !== Object.prototype.toString ) proto.toString = fields.toString;
 	return proto;
 }
-var HxOverrides = function() { };
-HxOverrides.__name__ = true;
-HxOverrides.cca = function(s,index) {
-	var x = s.charCodeAt(index);
-	if(x != x) {
-		return undefined;
-	}
-	return x;
-};
-HxOverrides.substr = function(s,pos,len) {
-	if(len == null) {
-		len = s.length;
-	} else if(len < 0) {
-		if(pos == 0) {
-			len = s.length + len;
-		} else {
-			return "";
-		}
-	}
-	return s.substr(pos,len);
-};
-HxOverrides.now = function() {
-	return Date.now();
-};
-var Linux = function() { };
-Linux.__name__ = true;
-Linux.isAptPackageInstalled = function(aptPackage) {
-	return System.commandSucceed("dpkg-query",["-W","-f='${Status}'",aptPackage]);
-};
-Linux.requireAptPackages = function(packages) {
-	var _g = [];
-	var _g1 = 0;
-	while(_g1 < packages.length) {
-		var p = packages[_g1];
-		++_g1;
-		if(!Linux.isAptPackageInstalled(p)) {
-			_g.push(p);
-		}
-	}
-	var notYetInstalled = _g;
-	if(notYetInstalled.length > 0) {
-		var aptCacheDir = process.env["APT_CACHE_DIR"];
-		var baseCommand = aptCacheDir != null ? ["apt-get","-o","dir::cache::archives=" + aptCacheDir,"install","-qqy"] : ["apt-get","install","-qqy"];
-		System.runCommand("sudo",baseCommand.concat(notYetInstalled),true);
-	}
-};
 function Main_main() {
-	target_Hl.getHlDependencies();
+	var systemName = Sys.systemName();
+	switch(systemName) {
+	case "Linux":
+		Main_deleteDirectoryRecursively("hashlink");
+		process.stdout.write("---------------------");
+		process.stdout.write("\n");
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync("sudo apt-get install libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev",{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync("sudo apt-get install libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev",args,{ stdio : "inherit"});
+		}
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync("git clone https://github.com/HaxeFoundation/hashlink",{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync("git clone https://github.com/HaxeFoundation/hashlink",args,{ stdio : "inherit"});
+		}
+		process.chdir("hashlink");
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync("sudo make all",{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync("sudo make all",args,{ stdio : "inherit"});
+		}
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync("sudo make install",{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync("sudo make install",args,{ stdio : "inherit"});
+		}
+		Main_addPath();
+		break;
+	case "Mac":
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync("/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync("/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",args,{ stdio : "inherit"});
+		}
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync("brew install hashlink",{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync("brew install hashlink",args,{ stdio : "inherit"});
+		}
+		break;
+	case "Windows":
+		Main_deleteDirectoryRecursively("hashlink_windows");
+		process.stdout.write("---------------------");
+		process.stdout.write("\n");
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync("powershell.exe -Command wget -O hashlink.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.11/hl-1.11.0-win.zip",{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync("powershell.exe -Command wget -O hashlink.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.11/hl-1.11.0-win.zip",args,{ stdio : "inherit"});
+		}
+		if(!sys_FileSystem.exists("hashlink_windows")) {
+			sys_FileSystem.createDirectory("hashlink_windows");
+		}
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync("powershell.exe -Command Expand-Archive hashlink.zip -DestinationPath hashlink_windows",{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync("powershell.exe -Command Expand-Archive hashlink.zip -DestinationPath hashlink_windows",args,{ stdio : "inherit"});
+		}
+		process.chdir("hashlink_windows/hl-1.11.0-win");
+		Main_addPath();
+		break;
+	}
 	var args = null;
 	if(args == null) {
 		js_node_ChildProcess.spawnSync("hl",{ shell : true, stdio : "inherit"});
@@ -62,24 +85,35 @@ function Main_main() {
 		js_node_ChildProcess.spawnSync("hl",args,{ stdio : "inherit"});
 	}
 }
-Math.__name__ = true;
-var Std = function() { };
-Std.__name__ = true;
-Std.string = function(s) {
-	return js_Boot.__string_rec(s,"");
-};
-var StringTools = function() { };
-StringTools.__name__ = true;
-StringTools.startsWith = function(s,start) {
-	if(s.length >= start.length) {
-		return s.lastIndexOf(start,0) == 0;
+function Main_deleteDirectoryRecursively(dir) {
+	if(Sys.systemName() == "Windows") {
+		var cmd = "rmdir /s /q " + dir;
+		var args = null;
+		if(args == null) {
+			return js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"}).status;
+		} else {
+			return js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"}).status;
+		}
 	} else {
-		return false;
+		var cmd = "rm -rf " + dir;
+		var args = null;
+		if(args == null) {
+			return js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"}).status;
+		} else {
+			return js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"}).status;
+		}
 	}
-};
-StringTools.replace = function(s,sub,by) {
-	return s.split(sub).join(by);
-};
+}
+function Main_addPath() {
+	var cmd = "echo \"" + process.cwd() + "\" >> " + process.env["GITHUB_PATH"];
+	var args = null;
+	if(args == null) {
+		js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"});
+	} else {
+		js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"});
+	}
+}
+Math.__name__ = true;
 var Sys = function() { };
 Sys.__name__ = true;
 Sys.systemName = function() {
@@ -125,81 +159,6 @@ _$Sys_FileOutput.prototype = $extend(haxe_io_Output.prototype,{
 });
 var haxe_io_Input = function() { };
 haxe_io_Input.__name__ = true;
-haxe_io_Input.prototype = {
-	readByte: function() {
-		throw new haxe_exceptions_NotImplementedException(null,null,{ fileName : "haxe/io/Input.hx", lineNumber : 53, className : "haxe.io.Input", methodName : "readByte"});
-	}
-	,readBytes: function(s,pos,len) {
-		var k = len;
-		var b = s.b;
-		if(pos < 0 || len < 0 || pos + len > s.length) {
-			throw haxe_Exception.thrown(haxe_io_Error.OutsideBounds);
-		}
-		try {
-			while(k > 0) {
-				b[pos] = this.readByte();
-				++pos;
-				--k;
-			}
-		} catch( _g ) {
-			if(!((haxe_Exception.caught(_g).unwrap()) instanceof haxe_io_Eof)) {
-				throw _g;
-			}
-		}
-		return len - k;
-	}
-	,readAll: function(bufsize) {
-		if(bufsize == null) {
-			bufsize = 16384;
-		}
-		var buf = new haxe_io_Bytes(new ArrayBuffer(bufsize));
-		var total = new haxe_io_BytesBuffer();
-		try {
-			while(true) {
-				var len = this.readBytes(buf,0,bufsize);
-				if(len == 0) {
-					throw haxe_Exception.thrown(haxe_io_Error.Blocked);
-				}
-				total.addBytes(buf,0,len);
-			}
-		} catch( _g ) {
-			if(!((haxe_Exception.caught(_g).unwrap()) instanceof haxe_io_Eof)) {
-				throw _g;
-			}
-		}
-		return total.getBytes();
-	}
-	,readLine: function() {
-		var buf = new haxe_io_BytesBuffer();
-		var last;
-		var s;
-		try {
-			while(true) {
-				last = this.readByte();
-				if(!(last != 10)) {
-					break;
-				}
-				buf.addByte(last);
-			}
-			s = buf.getBytes().toString();
-			if(HxOverrides.cca(s,s.length - 1) == 13) {
-				s = HxOverrides.substr(s,0,-1);
-			}
-		} catch( _g ) {
-			var _g1 = haxe_Exception.caught(_g).unwrap();
-			if(((_g1) instanceof haxe_io_Eof)) {
-				var e = _g1;
-				s = buf.getBytes().toString();
-				if(s.length == 0) {
-					throw haxe_Exception.thrown(e);
-				}
-			} else {
-				throw _g;
-			}
-		}
-		return s;
-	}
-};
 var _$Sys_FileInput = function(fd) {
 	this.fd = fd;
 };
@@ -238,165 +197,6 @@ _$Sys_FileInput.prototype = $extend(haxe_io_Input.prototype,{
 		js_node_Fs.closeSync(this.fd);
 	}
 });
-var Failure = $hxEnums["Failure"] = { __ename__:true,__constructs__:null
-	,Fail: {_hx_name:"Fail",_hx_index:0,__enum__:"Failure",toString:$estr}
-};
-Failure.__constructs__ = [Failure.Fail];
-var System = function() { };
-System.__name__ = true;
-System.successMsg = function(msg) {
-	process.stdout.write(Std.string(System.colorSupported ? "\x1B[32m" + msg + "\x1B[0m" : msg));
-	process.stdout.write("\n");
-};
-System.failMsg = function(msg) {
-	process.stdout.write(Std.string(System.colorSupported ? "\x1B[31m" + msg + "\x1B[0m" : msg));
-	process.stdout.write("\n");
-};
-System.infoMsg = function(msg) {
-	process.stdout.write(Std.string(System.colorSupported ? "\x1B[36m" + msg + "\x1B[0m" : msg));
-	process.stdout.write("\n");
-};
-System.commandSucceed = function(cmd,args) {
-	try {
-		var p = new sys.io.Process(cmd,args);
-		var succeed = p.exitCode() == 0;
-		p.close();
-		return succeed;
-	} catch( _g ) {
-		return false;
-	}
-};
-System.commandResult = function(cmd,args) {
-	var p = new sys.io.Process(cmd,args);
-	var out = { stdout : p.stdout.readAll().toString(), stderr : p.stderr.readAll().toString(), exitCode : p.exitCode()};
-	p.close();
-	return out;
-};
-System.runCommand = function(cmd,args,useRetry,allowFailure) {
-	if(allowFailure == null) {
-		allowFailure = false;
-	}
-	if(useRetry == null) {
-		useRetry = false;
-	}
-	var trials = useRetry ? 3 : 1;
-	var exitCode = 1;
-	var cmdStr = cmd + (args == null ? "" : " " + Std.string(args));
-	while(trials-- > 0) {
-		System.infoMsg("Command: " + cmdStr);
-		var hrtime = process.hrtime();
-		var t = hrtime[0] + hrtime[1] / 1e9;
-		exitCode = args == null ? js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"}).status : js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"}).status;
-		var hrtime1 = process.hrtime();
-		var dt = Math.round(hrtime1[0] + hrtime1[1] / 1e9 - t);
-		if(exitCode == 0) {
-			System.successMsg("Command exited with " + exitCode + " in " + dt + "s: " + cmdStr);
-			return;
-		} else {
-			System.failMsg("Command exited with " + exitCode + " in " + dt + "s: " + cmdStr);
-		}
-		if(trials > 0) {
-			System.infoMsg("Command will be re-run...");
-		}
-	}
-	if(!allowFailure) {
-		System.fail();
-	}
-};
-System.deleteDirectoryRecursively = function(dir) {
-	if(Sys.systemName() == "Windows") {
-		var args;
-		try {
-			args = js_node_Fs.realpathSync(dir);
-		} catch( _g ) {
-			args = null;
-		}
-		var args1 = ["/S","/Q",StringTools.replace(args,"/","\\")];
-		if(args1 == null) {
-			return js_node_ChildProcess.spawnSync("rmdir",{ shell : true, stdio : "inherit"}).status;
-		} else {
-			return js_node_ChildProcess.spawnSync("rmdir",args1,{ stdio : "inherit"}).status;
-		}
-	} else {
-		var args = ["-rf",dir];
-		if(args == null) {
-			return js_node_ChildProcess.spawnSync("rm",{ shell : true, stdio : "inherit"}).status;
-		} else {
-			return js_node_ChildProcess.spawnSync("rm",args,{ stdio : "inherit"}).status;
-		}
-	}
-};
-System.fail = function() {
-	System.success = false;
-	throw haxe_Exception.thrown(Failure.Fail);
-};
-System.addToPATH = function(path) {
-	System.infoMsg("Prepending " + path + " to PATH.");
-	switch(System.systemName) {
-	case "Linux":case "Mac":
-		var v = path + ":" + process.env["PATH"];
-		process.env["PATH"] = v;
-		break;
-	case "Windows":
-		var v = path + ";" + process.env["PATH"];
-		process.env["PATH"] = v;
-		break;
-	}
-};
-System.haxelibInstallGit = function(account,repository,branch,srcPath,useRetry,altName) {
-	if(useRetry == null) {
-		useRetry = false;
-	}
-	var name = altName == null ? repository : altName;
-	try {
-		System.getHaxelibPath(name);
-		System.infoMsg("" + name + " has already been installed.");
-	} catch( _g ) {
-		var args = ["git",name,"https://github.com/" + account + "/" + repository];
-		if(branch != null) {
-			args.push(branch);
-		}
-		if(srcPath != null) {
-			args.push(srcPath);
-		}
-		System.runCommand("haxelib",args,useRetry);
-	}
-};
-System.haxelibInstall = function(library) {
-	try {
-		System.getHaxelibPath(library);
-		System.infoMsg("" + library + " has already been installed.");
-	} catch( _g ) {
-		System.runCommand("haxelib",["install",library]);
-	}
-};
-System.haxelibRun = function(args,useRetry) {
-	if(useRetry == null) {
-		useRetry = false;
-	}
-	System.runCommand("haxelib",["run"].concat(args),useRetry);
-};
-System.getHaxelibPath = function(libName) {
-	var proc = new sys.io.Process("haxelib",["path",libName]);
-	var result;
-	var code = proc.exitCode();
-	while(true) {
-		result = proc.stdout.readLine();
-		if(!StringTools.startsWith(result,"-L")) {
-			break;
-		}
-	}
-	proc.close();
-	if(code != 0) {
-		throw haxe_Exception.thrown("Failed to get haxelib path (" + result + ")");
-	}
-	return result;
-};
-System.changeDirectory = function(path) {
-	process.stdout.write(Std.string("Changing directory to " + path));
-	process.stdout.write("\n");
-	process.chdir(path);
-};
 var haxe_Exception = function(message,previous,native) {
 	Error.call(this,message);
 	this.message = message;
@@ -428,12 +228,6 @@ haxe_Exception.prototype = $extend(Error.prototype,{
 	unwrap: function() {
 		return this.__nativeException;
 	}
-	,toString: function() {
-		return this.get_message();
-	}
-	,get_message: function() {
-		return this.message;
-	}
 	,get_native: function() {
 		return this.__nativeException;
 	}
@@ -449,31 +243,6 @@ haxe_ValueException.prototype = $extend(haxe_Exception.prototype,{
 		return this.value;
 	}
 });
-var haxe_exceptions_PosException = function(message,previous,pos) {
-	haxe_Exception.call(this,message,previous);
-	if(pos == null) {
-		this.posInfos = { fileName : "(unknown)", lineNumber : 0, className : "(unknown)", methodName : "(unknown)"};
-	} else {
-		this.posInfos = pos;
-	}
-};
-haxe_exceptions_PosException.__name__ = true;
-haxe_exceptions_PosException.__super__ = haxe_Exception;
-haxe_exceptions_PosException.prototype = $extend(haxe_Exception.prototype,{
-	toString: function() {
-		return "" + haxe_Exception.prototype.toString.call(this) + " in " + this.posInfos.className + "." + this.posInfos.methodName + " at " + this.posInfos.fileName + ":" + this.posInfos.lineNumber;
-	}
-});
-var haxe_exceptions_NotImplementedException = function(message,previous,pos) {
-	if(message == null) {
-		message = "Not implemented";
-	}
-	haxe_exceptions_PosException.call(this,message,previous,pos);
-};
-haxe_exceptions_NotImplementedException.__name__ = true;
-haxe_exceptions_NotImplementedException.__super__ = haxe_exceptions_PosException;
-haxe_exceptions_NotImplementedException.prototype = $extend(haxe_exceptions_PosException.prototype,{
-});
 var haxe_io_Bytes = function(data) {
 	this.length = data.byteLength;
 	this.b = new Uint8Array(data);
@@ -482,105 +251,6 @@ var haxe_io_Bytes = function(data) {
 	data.bytes = this.b;
 };
 haxe_io_Bytes.__name__ = true;
-haxe_io_Bytes.prototype = {
-	getString: function(pos,len,encoding) {
-		if(pos < 0 || len < 0 || pos + len > this.length) {
-			throw haxe_Exception.thrown(haxe_io_Error.OutsideBounds);
-		}
-		if(encoding == null) {
-			encoding = haxe_io_Encoding.UTF8;
-		}
-		var s = "";
-		var b = this.b;
-		var i = pos;
-		var max = pos + len;
-		switch(encoding._hx_index) {
-		case 0:
-			var debug = pos > 0;
-			while(i < max) {
-				var c = b[i++];
-				if(c < 128) {
-					if(c == 0) {
-						break;
-					}
-					s += String.fromCodePoint(c);
-				} else if(c < 224) {
-					var code = (c & 63) << 6 | b[i++] & 127;
-					s += String.fromCodePoint(code);
-				} else if(c < 240) {
-					var c2 = b[i++];
-					var code1 = (c & 31) << 12 | (c2 & 127) << 6 | b[i++] & 127;
-					s += String.fromCodePoint(code1);
-				} else {
-					var c21 = b[i++];
-					var c3 = b[i++];
-					var u = (c & 15) << 18 | (c21 & 127) << 12 | (c3 & 127) << 6 | b[i++] & 127;
-					s += String.fromCodePoint(u);
-				}
-			}
-			break;
-		case 1:
-			while(i < max) {
-				var c = b[i++] | b[i++] << 8;
-				s += String.fromCodePoint(c);
-			}
-			break;
-		}
-		return s;
-	}
-	,toString: function() {
-		return this.getString(0,this.length);
-	}
-};
-var haxe_io_BytesBuffer = function() {
-	this.pos = 0;
-	this.size = 0;
-};
-haxe_io_BytesBuffer.__name__ = true;
-haxe_io_BytesBuffer.prototype = {
-	addByte: function(byte) {
-		if(this.pos == this.size) {
-			this.grow(1);
-		}
-		this.view.setUint8(this.pos++,byte);
-	}
-	,addBytes: function(src,pos,len) {
-		if(pos < 0 || len < 0 || pos + len > src.length) {
-			throw haxe_Exception.thrown(haxe_io_Error.OutsideBounds);
-		}
-		if(this.pos + len > this.size) {
-			this.grow(len);
-		}
-		if(this.size == 0) {
-			return;
-		}
-		var sub = new Uint8Array(src.b.buffer,src.b.byteOffset + pos,len);
-		this.u8.set(sub,this.pos);
-		this.pos += len;
-	}
-	,grow: function(delta) {
-		var req = this.pos + delta;
-		var nsize = this.size == 0 ? 16 : this.size;
-		while(nsize < req) nsize = nsize * 3 >> 1;
-		var nbuf = new ArrayBuffer(nsize);
-		var nu8 = new Uint8Array(nbuf);
-		if(this.size > 0) {
-			nu8.set(this.u8);
-		}
-		this.size = nsize;
-		this.buffer = nbuf;
-		this.u8 = nu8;
-		this.view = new DataView(this.buffer);
-	}
-	,getBytes: function() {
-		if(this.size == 0) {
-			return new haxe_io_Bytes(new ArrayBuffer(0));
-		}
-		var b = new haxe_io_Bytes(this.buffer);
-		b.length = this.pos;
-		return b;
-	}
-};
 var haxe_io_Encoding = $hxEnums["haxe.io.Encoding"] = { __ename__:true,__constructs__:null
 	,UTF8: {_hx_name:"UTF8",_hx_index:0,__enum__:"haxe.io.Encoding",toString:$estr}
 	,RawNative: {_hx_name:"RawNative",_hx_index:1,__enum__:"haxe.io.Encoding",toString:$estr}
@@ -770,105 +440,9 @@ sys_FileSystem.createDirectory = function(path) {
 		}
 	}
 };
-var target_Hl = function() { };
-target_Hl.__name__ = true;
-target_Hl.getHlDependencies = function() {
-	if(System.commandSucceed("hl",["--version"])) {
-		System.infoMsg("hl has already been installed.");
-		return;
-	}
-	switch(target_Hl.systemName) {
-	case "Linux":
-		Linux.requireAptPackages(["ninja-build","libpng-dev","libjpeg-turbo8-dev","libturbojpeg","zlib1g-dev","libvorbis-dev","libopenal-dev","libsdl2-dev","libmbedtls-dev","libuv1-dev"]);
-		break;
-	case "Mac":
-		var args = null;
-		if(args == null) {
-			js_node_ChildProcess.spawnSync("/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",{ shell : true, stdio : "inherit"});
-		} else {
-			js_node_ChildProcess.spawnSync("/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",args,{ stdio : "inherit"});
-		}
-		break;
-	case "Windows":
-		break;
-	}
-	if(target_Hl.systemName == "Windows") {
-		if(!sys_FileSystem.exists("windows")) {
-			sys_FileSystem.createDirectory("windows");
-		}
-		process.chdir("windows");
-		if(!sys_FileSystem.exists("hashlink")) {
-			var args = null;
-			if(args == null) {
-				js_node_ChildProcess.spawnSync("powershell.exe -Command wget -O hashlink.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.11/hl-1.11.0-win.zip",{ shell : true, stdio : "inherit"});
-			} else {
-				js_node_ChildProcess.spawnSync("powershell.exe -Command wget -O hashlink.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.11/hl-1.11.0-win.zip",args,{ stdio : "inherit"});
-			}
-			var args = null;
-			if(args == null) {
-				js_node_ChildProcess.spawnSync("powershell.exe -Command Expand-Archive hashlink.zip",{ shell : true, stdio : "inherit"});
-			} else {
-				js_node_ChildProcess.spawnSync("powershell.exe -Command Expand-Archive hashlink.zip",args,{ stdio : "inherit"});
-			}
-		} else {
-			System.infoMsg("Reusing hashlink binary");
-		}
-		process.chdir("hashlink/hl-1.11.0-win");
-		var cmd = "powershell.exe -Command \"echo \"" + process.cwd() + "\" | Out-File -FilePath \"" + process.env["GITHUB_PATH"] + "\" -Encoding utf8 -Append\"";
-		var args = null;
-		if(args == null) {
-			js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"});
-		} else {
-			js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"});
-		}
-	} else {
-		process.env["LD_LIBRARY_PATH"] = "/usr/local/lib";
-		if(!sys_FileSystem.exists("hashlink")) {
-			System.runCommand("git",["clone","https://github.com/HaxeFoundation/hashlink.git"]);
-		} else {
-			System.infoMsg("Reusing hashlink repository");
-		}
-		process.chdir("hashlink");
-		if(target_Hl.systemName == "Mac") {
-			var args = null;
-			if(args == null) {
-				js_node_ChildProcess.spawnSync("brew bundle",{ shell : true, stdio : "inherit"});
-			} else {
-				js_node_ChildProcess.spawnSync("brew bundle",args,{ stdio : "inherit"});
-			}
-		}
-		var args = null;
-		if(args == null) {
-			js_node_ChildProcess.spawnSync("sudo make all",{ shell : true, stdio : "inherit"});
-		} else {
-			js_node_ChildProcess.spawnSync("sudo make all",args,{ stdio : "inherit"});
-		}
-		var args = null;
-		if(args == null) {
-			js_node_ChildProcess.spawnSync("sudo make install",{ shell : true, stdio : "inherit"});
-		} else {
-			js_node_ChildProcess.spawnSync("sudo make install",args,{ stdio : "inherit"});
-		}
-		var cmd = "echo \"" + process.cwd() + "\" >> " + process.env["GITHUB_PATH"];
-		var args = null;
-		if(args == null) {
-			js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"});
-		} else {
-			js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"});
-		}
-	}
-	System.runCommand("hl",["--version"]);
-};
-if(typeof(performance) != "undefined" ? typeof(performance.now) == "function" : false) {
-	HxOverrides.now = performance.now.bind(performance);
-}
 if( String.fromCodePoint == null ) String.fromCodePoint = function(c) { return c < 0x10000 ? String.fromCharCode(c) : String.fromCharCode((c>>10)+0xD7C0)+String.fromCharCode((c&0x3FF)+0xDC00); }
 String.__name__ = true;
 Array.__name__ = true;
 js_Boot.__toStr = ({ }).toString;
-System.success = true;
-System.colorSupported = true;
-System.systemName = Sys.systemName();
-target_Hl.systemName = System.systemName;
 Main_main();
 })({});

@@ -5,4 +5,5 @@
 *.db
 hashlink_build
 hashlink
+hashlink_windows
 cmake
