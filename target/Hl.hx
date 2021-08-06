@@ -32,7 +32,6 @@ class Hl {
 			case "Windows":
 				// pass
 		}
-
 		switch systemName {
 			case "Windows":
 				if (!FileSystem.exists("hashlink")) {
@@ -40,7 +39,7 @@ class Hl {
 					Sys.command("powershell.exe -Command Expand-Archive hashlink.zip");
 				} else
 					infoMsg("Reusing hashlink binary");
-				Sys.setCwd("hashlink/hl-1.11.0-win");
+				Sys.setCwd("./hashlink/hl-1.11.0-win");
 			default:
 				Sys.putEnv("LD_LIBRARY_PATH","/usr/local/lib");
 				if (!FileSystem.exists("hashlink")) {

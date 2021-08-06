@@ -796,7 +796,7 @@ target_Hl.getHlDependencies = function() {
 		} else {
 			System.infoMsg("Reusing hashlink binary");
 		}
-		process.chdir("hashlink/hl-1.11.0-win");
+		process.chdir("./hashlink/hl-1.11.0-win");
 	} else {
 		process.env["LD_LIBRARY_PATH"] = "/usr/local/lib";
 		if(!sys_FileSystem.exists("hashlink")) {
