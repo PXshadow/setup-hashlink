@@ -841,7 +841,6 @@ js_node_KeyValue.get_key = function(this1) {
 js_node_KeyValue.get_value = function(this1) {
 	return this1[1];
 };
-var js_node_Path = require("path");
 var js_node_buffer_Buffer = require("buffer").Buffer;
 var js_node_stream_WritableNewOptionsAdapter = {};
 js_node_stream_WritableNewOptionsAdapter.from = function(options) {
@@ -873,27 +872,6 @@ sys_FileSystem.exists = function(path) {
 		return false;
 	}
 };
-sys_FileSystem.createDirectory = function(path) {
-	try {
-		js_node_Fs.mkdirSync(path);
-	} catch( _g ) {
-		var e = haxe_Exception.caught(_g).unwrap();
-		if(e.code == "ENOENT") {
-			sys_FileSystem.createDirectory(js_node_Path.dirname(path));
-			js_node_Fs.mkdirSync(path);
-		} else {
-			var stat;
-			try {
-				stat = js_node_Fs.statSync(path);
-			} catch( _g1 ) {
-				throw e;
-			}
-			if(!stat.isDirectory()) {
-				throw e;
-			}
-		}
-	}
-};
 var target_Hl = function() { };
 target_Hl.__name__ = true;
 target_Hl.getHlDependencies = function() {
@@ -901,34 +879,59 @@ target_Hl.getHlDependencies = function() {
 		System.infoMsg("hl has already been installed.");
 		return;
 	}
-	if(!sys_FileSystem.exists(target_Hl.hlSrc)) {
-		System.runCommand("git",["clone","https://github.com/HaxeFoundation/hashlink.git",target_Hl.hlSrc]);
-	} else {
-		System.infoMsg("Reusing hashlink repository");
-	}
 	switch(Config.systemName) {
 	case "Linux":
-		Linux.requireAptPackages(["ninja-build","libpng-dev","libjpeg-turbo8-dev","libturbojpeg","zlib1g-dev","libvorbis-dev"]);
+		Linux.requireAptPackages(["ninja-build","libpng-dev","libjpeg-turbo8-dev","libturbojpeg","zlib1g-dev","libvorbis-dev","libopenal-dev","libsdl2-dev","libmbedtls-dev","libuv1-dev"]);
 		break;
 	case "Mac":
 		System.runCommand("brew",["update","--preinstall"],true);
 		System.runCommand("brew",["bundle","--file=" + target_Hl.hlSrc + "/Brewfile"],true);
 		break;
 	case "Windows":
-		if(Config.ci == Ci.GithubActions) {
-			var version = "3.21.1";
-			System.runCommand("powershell.exe -Command Invoke-WebRequest https://github.com/Kitware/CMake/releases/download/v" + version + "/cmake-" + version + "-windows-x86_64.zip -Outfile cmake.zip");
-			System.runCommand("powershell.exe -Command Expand-Archive cmake.zip");
-			System.runCommand("powershell.exe -Command Add-Content $Env:GITHUB_PATH " + ("(Resolve-Path cmake/cmake-" + version + "-windows-x86_64/bin) -NoNewline"));
-		}
 		break;
 	}
-	sys_FileSystem.createDirectory(target_Hl.hlBuild);
-	var generator = Config.systemName == "Windows" ? ["-DCMAKE_SYSTEM_VERSION=10.0.19041.0"] : ["-GNinja"];
-	System.runCommand("cmake",generator.concat(["-DBUILD_TESTING=OFF","-DWITH_BULLET=OFF","-DWITH_DIRECTX=OFF","-DWITH_FMT=ON","-DWITH_OPENAL=OFF","-DWITH_SDL=OFF","-DWITH_SQLITE=OFF","-DWITH_SSL=OFF","-DWITH_UI=OFF","-DWITH_UV=OFF","-DWITH_VIDEO=OFF","-B" + target_Hl.hlBuild,"-H" + target_Hl.hlSrc]));
-	System.runCommand("cmake",["--build",target_Hl.hlBuild]);
-	System.runCommand(target_Hl.hlBinary,["--version"]);
-	System.addToPATH(target_Hl.hlBinDir);
+	if(Config.systemName == "Windows") {
+		if(!sys_FileSystem.exists(target_Hl.hlSrc)) {
+			var args = null;
+			if(args == null) {
+				js_node_ChildProcess.spawnSync("powershell.exe -Command wget -O hashlink.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.11/hl-1.11.0-win.zip",{ shell : true, stdio : "inherit"});
+			} else {
+				js_node_ChildProcess.spawnSync("powershell.exe -Command wget -O hashlink.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.11/hl-1.11.0-win.zip",args,{ stdio : "inherit"});
+			}
+			var args = null;
+			if(args == null) {
+				js_node_ChildProcess.spawnSync("powershell.exe -Command Expand-Archive hashlink.zip",{ shell : true, stdio : "inherit"});
+			} else {
+				js_node_ChildProcess.spawnSync("powershell.exe -Command Expand-Archive hashlink.zip",args,{ stdio : "inherit"});
+			}
+		} else {
+			System.infoMsg("Reusing hashlink binary");
+		}
+		System.addToPATH("hashlink/hl-1.11.0-win");
+	} else {
+		if(!sys_FileSystem.exists(target_Hl.hlSrc)) {
+			System.runCommand("git",["clone","https://github.com/HaxeFoundation/hashlink.git",target_Hl.hlSrc]);
+		} else {
+			System.infoMsg("Reusing hashlink repository");
+		}
+		var s = target_Hl.hlSrc;
+		process.chdir(s);
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync("sudo make all",{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync("sudo make all",args,{ stdio : "inherit"});
+		}
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync("sudo make install",{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync("sudo make install",args,{ stdio : "inherit"});
+		}
+		process.chdir("..");
+		System.addToPATH(target_Hl.hlSrc + "/bin");
+	}
+	System.runCommand("hl",["--version"]);
 };
 if(typeof(performance) != "undefined" ? typeof(performance.now) == "function" : false) {
 	HxOverrides.now = performance.now.bind(performance);
@@ -990,51 +993,6 @@ target_Hl.hlSrc = (function($this) {
 		switch(_g._hx_index) {
 		case 0:
 			$r = _g1 == "Windows" ? "C:\\hashlink" : haxe_io_Path.join([process.env["HOME"],"hashlink"]);
-			break;
-		}
-		return $r;
-	}($this));
-	return $r;
-}(this));
-target_Hl.hlBuild = (function($this) {
-	var $r;
-	var _g = Config.ci;
-	var _g1 = Config.systemName;
-	$r = _g == null ? haxe_io_Path.join([process.env["HOME"],"hashlink_build"]) : (function($this) {
-		var $r;
-		switch(_g._hx_index) {
-		case 0:
-			$r = _g1 == "Windows" ? "C:\\hashlink_build" : haxe_io_Path.join([process.env["HOME"],"hashlink_build"]);
-			break;
-		}
-		return $r;
-	}($this));
-	return $r;
-}(this));
-target_Hl.hlBinDir = (function($this) {
-	var $r;
-	var _g = Config.ci;
-	var _g1 = Config.systemName;
-	$r = _g == null ? haxe_io_Path.join([process.env["HOME"],"hashlink_build","bin"]) : (function($this) {
-		var $r;
-		switch(_g._hx_index) {
-		case 0:
-			$r = _g1 == "Windows" ? "C:\\hashlink_build\\bin" : haxe_io_Path.join([process.env["HOME"],"hashlink_build","bin"]);
-			break;
-		}
-		return $r;
-	}($this));
-	return $r;
-}(this));
-target_Hl.hlBinary = (function($this) {
-	var $r;
-	var _g = Config.ci;
-	var _g1 = Config.systemName;
-	$r = _g == null ? haxe_io_Path.join([process.env["HOME"],"hashlink_build","bin","hl"]) : (function($this) {
-		var $r;
-		switch(_g._hx_index) {
-		case 0:
-			$r = _g1 == "Windows" ? "C:\\hashlink_build\\bin\\hl.exe" : haxe_io_Path.join([process.env["HOME"],"hashlink_build","bin","hl"]);
 			break;
 		}
 		return $r;

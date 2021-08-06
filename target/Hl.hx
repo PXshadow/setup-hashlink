@@ -11,28 +11,12 @@ class Hl {
 			case [GithubActions, "Windows"]: "C:\\hashlink";
 			case _: Path.join([Sys.getEnv("HOME"), "hashlink"]);
 		};
-	static var hlBuild = switch [ci, systemName] {
-			case [GithubActions, "Windows"]: "C:\\hashlink_build";
-			case _: Path.join([Sys.getEnv("HOME"), "hashlink_build"]);
-		};
-	static var hlBinDir = switch [ci, systemName] {
-			case [GithubActions, "Windows"]: "C:\\hashlink_build\\bin";
-			case _: Path.join([Sys.getEnv("HOME"), "hashlink_build", "bin"]);
-		};
-	static var hlBinary = switch [ci, systemName] {
-			case [GithubActions, "Windows"]: "C:\\hashlink_build\\bin\\hl.exe";
-			case _: Path.join([Sys.getEnv("HOME"), "hashlink_build", "bin", "hl"]);
-		};
 
 	static public function getHlDependencies() {
 		if (commandSucceed("hl", ["--version"])) {
 			infoMsg('hl has already been installed.');
 			return;
 		}
-		if (!FileSystem.exists(hlSrc)) {
-			runCommand("git", ["clone", "https://github.com/HaxeFoundation/hashlink.git", hlSrc]);
-		} else
-			infoMsg("Reusing hashlink repository");
 
 		switch (systemName) {
 			case "Linux":
@@ -42,30 +26,39 @@ class Hl {
 					"libjpeg-turbo8-dev",
 					"libturbojpeg",
 					"zlib1g-dev",
-					"libvorbis-dev"
+					"libvorbis-dev",
+					"libopenal-dev",
+					"libsdl2-dev",
+					"libmbedtls-dev",
+					"libuv1-dev",
 				]);
 			case "Mac":
 				runCommand("brew", ["update", '--preinstall'], true);
 				runCommand("brew", ["bundle", '--file=${hlSrc}/Brewfile'], true);
 			case "Windows":
 				// pass
-				if (ci == GithubActions) {
-					final version = "3.21.1";
-					runCommand('powershell.exe -Command Invoke-WebRequest https://github.com/Kitware/CMake/releases/download/v$version/cmake-$version-windows-x86_64.zip -Outfile cmake.zip');
-					runCommand("powershell.exe -Command Expand-Archive cmake.zip");
-					runCommand("powershell.exe -Command Add-Content $Env:GITHUB_PATH " + '(Resolve-Path cmake/cmake-$version-windows-x86_64/bin) -NoNewline');
-				}
 		}
 
-		FileSystem.createDirectory(hlBuild);
-		var generator = systemName == "Windows" ? ["-DCMAKE_SYSTEM_VERSION=10.0.19041.0"] : ["-GNinja"];
-		runCommand("cmake", generator.concat([
-			"-DBUILD_TESTING=OFF", "-DWITH_BULLET=OFF", "-DWITH_DIRECTX=OFF", "-DWITH_FMT=ON", "-DWITH_OPENAL=OFF", "-DWITH_SDL=OFF", "-DWITH_SQLITE=OFF",
-			"-DWITH_SSL=OFF", "-DWITH_UI=OFF", "-DWITH_UV=OFF", "-DWITH_VIDEO=OFF", "-B" + hlBuild, "-H" + hlSrc
-		]));
-		runCommand("cmake", ["--build", hlBuild]);
+		switch systemName {
+			case "Windows":
+				if (!FileSystem.exists(hlSrc)) {
+					Sys.command('powershell.exe -Command wget -O hashlink.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.11/hl-1.11.0-win.zip');
+					Sys.command("powershell.exe -Command Expand-Archive hashlink.zip");
+				} else
+					infoMsg("Reusing hashlink binary");
+				addToPATH("hashlink/hl-1.11.0-win");
+			default:
+				if (!FileSystem.exists(hlSrc)) {
+					runCommand("git", ["clone", "https://github.com/HaxeFoundation/hashlink.git", hlSrc]);
+				} else
+					infoMsg("Reusing hashlink repository");
+				Sys.setCwd(hlSrc);
+				Sys.command("sudo make all");
+				Sys.command("sudo make install");
+				Sys.setCwd("..");
+				addToPATH(hlSrc + "/bin");
+		}
 
-		runCommand(hlBinary, ["--version"]);
-		addToPATH(hlBinDir);
+		runCommand("hl", ["--version"]);
 	}
 }
