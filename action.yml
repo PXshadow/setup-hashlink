@@ -1,5 +1,14 @@
 name: 'Setup Hashlink'
 description: 'Install and setup Hashlink'
+jobs:
+  publish:
+    - uses: actions/checkout@master
+    - uses: seanmiddleditch/gha-setup-ninja@master
+    - run: |
+      mkdir build
+      cd build
+      cmake -G Ninja ..
+    - run: cmake --build build
 runs:
   using: 'node12'
   main: 'main.js'
