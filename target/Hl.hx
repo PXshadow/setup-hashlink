@@ -33,8 +33,8 @@ class Hl {
 					"libuv1-dev",
 				]);
 			case "Mac":
-				runCommand("brew", ["update", '--preinstall'], true);
-				runCommand("brew", ["bundle", '--file=${hlSrc}/Brewfile'], true);
+				Sys.setCwd(hlSrc);
+				Sys.command("brew bundle");
 			case "Windows":
 				// pass
 		}

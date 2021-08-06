@@ -884,8 +884,14 @@ target_Hl.getHlDependencies = function() {
 		Linux.requireAptPackages(["ninja-build","libpng-dev","libjpeg-turbo8-dev","libturbojpeg","zlib1g-dev","libvorbis-dev","libopenal-dev","libsdl2-dev","libmbedtls-dev","libuv1-dev"]);
 		break;
 	case "Mac":
-		System.runCommand("brew",["update","--preinstall"],true);
-		System.runCommand("brew",["bundle","--file=" + target_Hl.hlSrc + "/Brewfile"],true);
+		var s = target_Hl.hlSrc;
+		process.chdir(s);
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync("brew bundle",{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync("brew bundle",args,{ stdio : "inherit"});
+		}
 		break;
 	case "Windows":
 		break;
