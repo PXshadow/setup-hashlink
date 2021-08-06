@@ -26,6 +26,10 @@ function main() {
             Sys.command('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'); //setup homebrew
             Sys.command("brew install hashlink");
     }
+    if (systemName != "Mac") {
+        Sys.putEnv("Hashlink",Sys.getCwd());
+        Sys.putEnv("HASHLINKPATH",Sys.getCwd());
+    }
 }
 
 private function deleteDirectoryRecursively(dir:String):Int {

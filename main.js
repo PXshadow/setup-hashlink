@@ -96,6 +96,12 @@ function Main_main() {
 		}
 		break;
 	}
+	if(systemName != "Mac") {
+		var v = process.cwd();
+		process.env["Hashlink"] = v;
+		var v = process.cwd();
+		process.env["HASHLINKPATH"] = v;
+	}
 }
 function Main_deleteDirectoryRecursively(dir) {
 	if(Sys.systemName() == "Windows") {
