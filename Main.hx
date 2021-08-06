@@ -10,7 +10,8 @@ function main() {
                 sys.FileSystem.createDirectory("hashlink_windows");
 			Sys.command("powershell.exe -Command Expand-Archive hashlink.zip -DestinationPath hashlink_windows");
             Sys.setCwd("hashlink_windows/hl-1.11.0-win");
-            addPath();
+            
+            Sys.command('powershell.exe -Command "echo "' + Sys.getCwd() + '" | Out-File -FilePath "' + Sys.getEnv("GITHUB_PATH") + '" -Encoding utf8 -Append"');
         case "Linux":
             deleteDirectoryRecursively("hashlink");
             Sys.println("---------------------");
@@ -19,7 +20,8 @@ function main() {
             Sys.setCwd("hashlink"); //change dir to hashlink
             Sys.command("sudo make all");
             Sys.command("sudo make install");
-           addPath();
+            
+            Sys.command('echo "' + Sys.getCwd() + '" >> ' + Sys.getEnv("GITHUB_PATH"));
         case "Mac":
             Sys.command('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'); //setup homebrew
             Sys.command("brew install hashlink");
@@ -33,8 +35,4 @@ private function deleteDirectoryRecursively(dir:String):Int {
         case _:
             Sys.command("rm -rf " + dir);
     }
-}
-
-private function addPath() {
-    Sys.command('echo "' + Sys.getCwd() + '" >> ' + Sys.getEnv("GITHUB_PATH"));
 }

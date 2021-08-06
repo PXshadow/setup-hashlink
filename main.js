@@ -39,7 +39,13 @@ function Main_main() {
 		} else {
 			js_node_ChildProcess.spawnSync("sudo make install",args,{ stdio : "inherit"});
 		}
-		Main_addPath();
+		var cmd = "echo \"" + process.cwd() + "\" >> " + process.env["GITHUB_PATH"];
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"});
+		}
 		break;
 	case "Mac":
 		var args = null;
@@ -75,7 +81,13 @@ function Main_main() {
 			js_node_ChildProcess.spawnSync("powershell.exe -Command Expand-Archive hashlink.zip -DestinationPath hashlink_windows",args,{ stdio : "inherit"});
 		}
 		process.chdir("hashlink_windows/hl-1.11.0-win");
-		Main_addPath();
+		var cmd = "powershell.exe -Command \"echo \"" + process.cwd() + "\" | Out-File -FilePath \"" + process.env["GITHUB_PATH"] + "\" -Encoding utf8 -Append\"";
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"});
+		}
 		break;
 	}
 }
@@ -96,15 +108,6 @@ function Main_deleteDirectoryRecursively(dir) {
 		} else {
 			return js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"}).status;
 		}
-	}
-}
-function Main_addPath() {
-	var cmd = "echo \"" + process.cwd() + "\" >> " + process.env["GITHUB_PATH"];
-	var args = null;
-	if(args == null) {
-		js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"});
-	} else {
-		js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"});
 	}
 }
 Math.__name__ = true;
