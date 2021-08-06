@@ -884,14 +884,6 @@ target_Hl.getHlDependencies = function() {
 		Linux.requireAptPackages(["ninja-build","libpng-dev","libjpeg-turbo8-dev","libturbojpeg","zlib1g-dev","libvorbis-dev","libopenal-dev","libsdl2-dev","libmbedtls-dev","libuv1-dev"]);
 		break;
 	case "Mac":
-		var s = target_Hl.hlSrc;
-		process.chdir(s);
-		var args = null;
-		if(args == null) {
-			js_node_ChildProcess.spawnSync("brew bundle",{ shell : true, stdio : "inherit"});
-		} else {
-			js_node_ChildProcess.spawnSync("brew bundle",args,{ stdio : "inherit"});
-		}
 		break;
 	case "Windows":
 		break;
@@ -923,6 +915,14 @@ target_Hl.getHlDependencies = function() {
 		}
 		var s = target_Hl.hlSrc;
 		process.chdir(s);
+		if(Config.systemName == "Mac") {
+			var args = null;
+			if(args == null) {
+				js_node_ChildProcess.spawnSync("brew bundle",{ shell : true, stdio : "inherit"});
+			} else {
+				js_node_ChildProcess.spawnSync("brew bundle",args,{ stdio : "inherit"});
+			}
+		}
 		var args = null;
 		if(args == null) {
 			js_node_ChildProcess.spawnSync("sudo make all",{ shell : true, stdio : "inherit"});

@@ -33,8 +33,6 @@ class Hl {
 					"libuv1-dev",
 				]);
 			case "Mac":
-				Sys.setCwd(hlSrc);
-				Sys.command("brew bundle");
 			case "Windows":
 				// pass
 		}
@@ -54,6 +52,9 @@ class Hl {
 				} else
 					infoMsg("Reusing hashlink repository");
 				Sys.setCwd(hlSrc);
+				if (systemName == "Mac")
+					Sys.command("brew bundle");
+				
 				Sys.command("sudo make all");
 				Sys.command("sudo make install");
 				addToPATH(hlSrc);
