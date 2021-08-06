@@ -7,8 +7,6 @@ import sys.FileSystem;
 
 class Hl {
 
-	static var hlSrc = Sys.getCwd() + "/hashlink";
-
 	static public function getHlDependencies() {
 		if (commandSucceed("hl", ["--version"])) {
 			infoMsg('hl has already been installed.');
@@ -37,27 +35,26 @@ class Hl {
 
 		switch systemName {
 			case "Windows":
-				if (!FileSystem.exists(hlSrc)) {
+				if (!FileSystem.exists("hashlink")) {
 					Sys.command('powershell.exe -Command wget -O hashlink.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.11/hl-1.11.0-win.zip');
 					Sys.command("powershell.exe -Command Expand-Archive hashlink.zip");
 				} else
 					infoMsg("Reusing hashlink binary");
-				addToPATH("hashlink/hl-1.11.0-win");
+				Sys.setCwd("hashlink/hl-1.11.0-win");
 			default:
 				Sys.putEnv("LD_LIBRARY_PATH","/usr/local/lib");
-				if (!FileSystem.exists(hlSrc)) {
-					runCommand("git", ["clone", "https://github.com/HaxeFoundation/hashlink.git", hlSrc]);
+				if (!FileSystem.exists("hashlink")) {
+					runCommand("git", ["clone", "https://github.com/HaxeFoundation/hashlink.git"]);
 				} else
 					infoMsg("Reusing hashlink repository");
-				Sys.setCwd(hlSrc);
+				Sys.setCwd("hashlink");
 				if (systemName == "Mac")
 					Sys.command("brew bundle");
 
 				Sys.command("sudo make all");
 				Sys.command("sudo make install");
-				addToPATH(hlSrc);
 		}
-
+		addToPATH(Sys.getCwd());
 		runCommand("hl", ["--version"]);
 	}
 }

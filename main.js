@@ -780,7 +780,7 @@ target_Hl.getHlDependencies = function() {
 		break;
 	}
 	if(Config.systemName == "Windows") {
-		if(!sys_FileSystem.exists(target_Hl.hlSrc)) {
+		if(!sys_FileSystem.exists("hashlink")) {
 			var args = null;
 			if(args == null) {
 				js_node_ChildProcess.spawnSync("powershell.exe -Command wget -O hashlink.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.11/hl-1.11.0-win.zip",{ shell : true, stdio : "inherit"});
@@ -796,16 +796,15 @@ target_Hl.getHlDependencies = function() {
 		} else {
 			System.infoMsg("Reusing hashlink binary");
 		}
-		System.addToPATH("hashlink/hl-1.11.0-win");
+		process.chdir("hashlink/hl-1.11.0-win");
 	} else {
 		process.env["LD_LIBRARY_PATH"] = "/usr/local/lib";
-		if(!sys_FileSystem.exists(target_Hl.hlSrc)) {
-			System.runCommand("git",["clone","https://github.com/HaxeFoundation/hashlink.git",target_Hl.hlSrc]);
+		if(!sys_FileSystem.exists("hashlink")) {
+			System.runCommand("git",["clone","https://github.com/HaxeFoundation/hashlink.git"]);
 		} else {
 			System.infoMsg("Reusing hashlink repository");
 		}
-		var s = target_Hl.hlSrc;
-		process.chdir(s);
+		process.chdir("hashlink");
 		if(Config.systemName == "Mac") {
 			var args = null;
 			if(args == null) {
@@ -826,8 +825,8 @@ target_Hl.getHlDependencies = function() {
 		} else {
 			js_node_ChildProcess.spawnSync("sudo make install",args,{ stdio : "inherit"});
 		}
-		System.addToPATH(target_Hl.hlSrc);
 	}
+	System.addToPATH(process.cwd());
 	System.runCommand("hl",["--version"]);
 };
 if(typeof(performance) != "undefined" ? typeof(performance.now) == "function" : false) {
@@ -881,6 +880,5 @@ Config.colorSupported = (function($this) {
 	return $r;
 }(this));
 System.success = true;
-target_Hl.hlSrc = process.cwd() + "/hashlink";
 Main_main();
 })({});
