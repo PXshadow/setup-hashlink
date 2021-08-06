@@ -18,6 +18,7 @@ function main() {
             Sys.command("sudo apt-get install libpng-dev libturbojpeg-dev libvorbis-dev libopenal-dev libsdl2-dev libmbedtls-dev libuv1-dev");
             Sys.command("sudo git clone https://github.com/HaxeFoundation/hashlink /usr/hashlink");
             Sys.setCwd("/usr/hashlink"); //change dir to hashlink
+            Sys.command("sudo make");
             Sys.command("sudo make all");
             Sys.command("sudo make install");
             Sys.command("sudo ldconfig");

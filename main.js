@@ -29,6 +29,12 @@ function Main_main() {
 		process.chdir("/usr/hashlink");
 		var args = null;
 		if(args == null) {
+			js_node_ChildProcess.spawnSync("sudo make",{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync("sudo make",args,{ stdio : "inherit"});
+		}
+		var args = null;
+		if(args == null) {
 			js_node_ChildProcess.spawnSync("sudo make all",{ shell : true, stdio : "inherit"});
 		} else {
 			js_node_ChildProcess.spawnSync("sudo make all",args,{ stdio : "inherit"});
