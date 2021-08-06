@@ -42,6 +42,7 @@ class Hl {
 				} else
 					infoMsg("Reusing hashlink binary");
 				Sys.setCwd("hashlink/hl-1.11.0-win");
+				Sys.command('powershell.exe -Command "echo "' + Sys.getCwd() + '" | Out-File -FilePath "' + Sys.getEnv("GITHUB_PATH") + '" -Encoding utf8 -Append"');
 			default:
 				Sys.putEnv("LD_LIBRARY_PATH","/usr/local/lib");
 				if (!FileSystem.exists("hashlink")) {
@@ -54,8 +55,8 @@ class Hl {
 
 				Sys.command("sudo make all");
 				Sys.command("sudo make install");
+				Sys.command('echo "' + Sys.getCwd() + '" >> ' + Sys.getEnv("GITHUB_PATH"));
 		}
-		addToPATH(Sys.getCwd());
 		runCommand("hl", ["--version"]);
 	}
 }

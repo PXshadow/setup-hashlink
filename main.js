@@ -814,6 +814,13 @@ target_Hl.getHlDependencies = function() {
 			System.infoMsg("Reusing hashlink binary");
 		}
 		process.chdir("hashlink/hl-1.11.0-win");
+		var cmd = "powershell.exe -Command \"echo \"" + process.cwd() + "\" | Out-File -FilePath \"" + process.env["GITHUB_PATH"] + "\" -Encoding utf8 -Append\"";
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"});
+		}
 	} else {
 		process.env["LD_LIBRARY_PATH"] = "/usr/local/lib";
 		if(!sys_FileSystem.exists("hashlink")) {
@@ -842,8 +849,14 @@ target_Hl.getHlDependencies = function() {
 		} else {
 			js_node_ChildProcess.spawnSync("sudo make install",args,{ stdio : "inherit"});
 		}
+		var cmd = "echo \"" + process.cwd() + "\" >> " + process.env["GITHUB_PATH"];
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync(cmd,{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync(cmd,args,{ stdio : "inherit"});
+		}
 	}
-	System.addToPATH(process.cwd());
 	System.runCommand("hl",["--version"]);
 };
 if(typeof(performance) != "undefined" ? typeof(performance.now) == "function" : false) {
