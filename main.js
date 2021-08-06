@@ -908,13 +908,19 @@ target_Hl.getHlDependencies = function() {
 	}
 	switch(Config.systemName) {
 	case "Linux":
-		Linux.requireAptPackages(["libpng-dev","libjpeg-turbo8-dev","libturbojpeg","zlib1g-dev","libvorbis-dev"]);
+		Linux.requireAptPackages(["ninja-build","libpng-dev","libjpeg-turbo8-dev","libturbojpeg","zlib1g-dev","libvorbis-dev"]);
 		break;
 	case "Mac":
 		System.runCommand("brew",["update","--preinstall"],true);
 		System.runCommand("brew",["bundle","--file=" + target_Hl.hlSrc + "/Brewfile"],true);
 		break;
 	case "Windows":
+		if(Config.ci == Ci.GithubActions) {
+			var version = "3.21.1";
+			System.runCommand("powershell.exe -Command Invoke-WebRequest https://github.com/Kitware/CMake/releases/download/v" + version + "/cmake-" + version + "-windows-x86_64.zip -Outfile cmake.zip");
+			System.runCommand("powershell.exe -Command Expand-Archive cmake.zip");
+			System.runCommand("powershell.exe -Command Add-Content $Env:GITHUB_PATH " + ("(Resolve-Path cmake/cmake-" + version + "-windows-x86_64/bin) -NoNewline"));
+		}
 		break;
 	}
 	sys_FileSystem.createDirectory(target_Hl.hlBuild);

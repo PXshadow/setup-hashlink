@@ -37,6 +37,7 @@ class Hl {
 		switch (systemName) {
 			case "Linux":
 				Linux.requireAptPackages([
+					"ninja-build",
 					"libpng-dev",
 					"libjpeg-turbo8-dev",
 					"libturbojpeg",
@@ -48,6 +49,12 @@ class Hl {
 				runCommand("brew", ["bundle", '--file=${hlSrc}/Brewfile'], true);
 			case "Windows":
 				// pass
+				if (ci == GithubActions) {
+					final version = "3.21.1";
+					runCommand('powershell.exe -Command Invoke-WebRequest https://github.com/Kitware/CMake/releases/download/v$version/cmake-$version-windows-x86_64.zip -Outfile cmake.zip');
+					runCommand("powershell.exe -Command Expand-Archive cmake.zip");
+					runCommand("powershell.exe -Command Add-Content $Env:GITHUB_PATH " + '(Resolve-Path cmake/cmake-$version-windows-x86_64/bin) -NoNewline');
+				}
 		}
 
 		FileSystem.createDirectory(hlBuild);

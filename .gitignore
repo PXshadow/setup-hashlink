@@ -4,3 +4,5 @@
 *.hl
 *.db
 hashlink_build
+hashlink
+cmake
