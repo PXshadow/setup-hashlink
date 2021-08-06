@@ -796,6 +796,12 @@ target_Hl.getHlDependencies = function() {
 		} else {
 			System.infoMsg("Reusing hashlink binary");
 		}
+		var args = null;
+		if(args == null) {
+			js_node_ChildProcess.spawnSync("dir",{ shell : true, stdio : "inherit"});
+		} else {
+			js_node_ChildProcess.spawnSync("dir",args,{ stdio : "inherit"});
+		}
 		process.chdir("./hashlink/hl-1.11.0-win");
 	} else {
 		process.env["LD_LIBRARY_PATH"] = "/usr/local/lib";
