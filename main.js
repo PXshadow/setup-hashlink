@@ -22,11 +22,11 @@ function Main_main() {
 		}
 		var args = null;
 		if(args == null) {
-			js_node_ChildProcess.spawnSync("git clone https://github.com/HaxeFoundation/hashlink",{ shell : true, stdio : "inherit"});
+			js_node_ChildProcess.spawnSync("git clone https://github.com/HaxeFoundation/hashlink /usr/hashlink",{ shell : true, stdio : "inherit"});
 		} else {
-			js_node_ChildProcess.spawnSync("git clone https://github.com/HaxeFoundation/hashlink",args,{ stdio : "inherit"});
+			js_node_ChildProcess.spawnSync("git clone https://github.com/HaxeFoundation/hashlink /usr/hashlink",args,{ stdio : "inherit"});
 		}
-		process.chdir("hashlink");
+		process.chdir("/usr/hashlink");
 		var args = null;
 		if(args == null) {
 			js_node_ChildProcess.spawnSync("sudo make all",{ shell : true, stdio : "inherit"});
