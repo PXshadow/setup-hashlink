@@ -15,6 +15,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: pxshadow/setup-hashlink@v1.0.1
+      - uses: pxshadow/setup-hashlink@v1.0.2
       - run: hl
 ```
