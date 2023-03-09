@@ -15,7 +15,7 @@ function main() {
         case "Linux":
             deleteDirectoryRecursively("hashlink");
             Sys.println("---------------------");
-	        Sys.command("sudo apt-get update -y");
+	        // Sys.command("sudo apt-get update -y");
             Sys.command("sudo apt-get install --no-install-recommends -y libmbedtls-dev libopenal-dev libpng-dev libsdl2-dev libturbojpeg-dev libuv1-dev libvorbis-dev libsqlite3-dev");
             Sys.command("sudo git clone https://github.com/HaxeFoundation/hashlink");
             Sys.setCwd("hashlink");
