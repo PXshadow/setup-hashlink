@@ -10,9 +10,9 @@ jobs:
       fail-fast: true
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
       - name: install lix
         run: npm i lix -g
       - name: run lix
