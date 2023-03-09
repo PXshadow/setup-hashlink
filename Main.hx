@@ -5,11 +5,11 @@ function main() {
         case "Windows":
             deleteDirectoryRecursively("hashlink_windows");
             Sys.println("---------------------");
-            Sys.command('powershell.exe -Command wget -O hashlink.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.11/hl-1.11.0-win.zip');
+            Sys.command('powershell.exe -Command wget -O hashlink.zip https://github.com/HaxeFoundation/hashlink/releases/download/1.13/hl-1.13.0-win.zip');
             if (!sys.FileSystem.exists("hashlink_windows"))
                 sys.FileSystem.createDirectory("hashlink_windows");
 			Sys.command("powershell.exe -Command Expand-Archive hashlink.zip -DestinationPath hashlink_windows");
-            Sys.setCwd("hashlink_windows/hl-1.11.0-win");
+            Sys.setCwd("hashlink_windows/hl-1.13.0-win");
             
             Sys.command('powershell.exe -Command "echo "' + Sys.getCwd() + '" | Out-File -FilePath "' + Sys.getEnv("GITHUB_PATH") + '" -Encoding utf8 -Append"');
         case "Linux":
