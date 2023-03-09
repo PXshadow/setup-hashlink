@@ -16,7 +16,7 @@ function main() {
             deleteDirectoryRecursively("hashlink");
             Sys.println("---------------------");
 	        Sys.command("sudo apt-get update -y");
-            Sys.command("sudo apt-get install --no-install-recommends -y gcc-multilib libalut-dev:i386 libmbedtls-dev:i386 libopenal-dev:i386 libpng-dev:i386 libsdl2-dev:i386 libturbojpeg0-dev:i386 libuv1-dev:i386 libvorbis-dev:i386 libz-dev:i386 zlib1g-dev:i386 libsqlite3-dev:i386");
+            Sys.command("sudo apt-get install --no-install-recommends -y libmbedtls-dev libopenal-dev libpng-dev libsdl2-dev libturbojpeg-dev libuv1-dev libvorbis-dev libsqlite3-dev");
             Sys.command("sudo git clone https://github.com/HaxeFoundation/hashlink");
             Sys.setCwd("hashlink");
             Sys.command("sudo make");
