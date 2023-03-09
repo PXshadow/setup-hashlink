@@ -1,5 +1,8 @@
 # setup-hashlink
 
+Use Cedx's [setup-hashlink](https://github.com/cedx/setup-hashlink) instead, it's well maintained and works well.
+
+
 [![CI](https://img.shields.io/github/workflow/status/pxshadow/setup-hashlink/CI)](https://github.com/pxshadow/setup-hashlink/actions?query=workflow%3ACI)
 
 This action sets up Hashlink for use in your github actions workflow.
